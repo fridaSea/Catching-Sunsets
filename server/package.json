@@ -1,0 +1,18 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "author": "Maria",
+  "license": "ISC",
+  "type": "module",
+  "description": "",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "express": "^4.21.2",
+    "mongoose": "^8.10.1"
+  }
+}
