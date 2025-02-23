@@ -5,6 +5,7 @@ import testRouter from "./routes/testRoute.js";
 import * as dotenv from "dotenv";
 dotenv.config(); // Initialise dotenv
 import mongoose from "mongoose";
+import sunsetsRouter from "./routes/sunsetsRoute.js";
 
 const app = express();
 
@@ -20,6 +21,9 @@ app.use(
 );
 app.use(cors());
 // console.log("process.env.MONGODB_URI :>> ".yellow, process.env.MONGODB_URI);
+
+app.use("/api/", testRouter);
+app.use("/api/sunsets", sunsetsRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on  port ${port}`.bgGreen);
