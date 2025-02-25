@@ -5,7 +5,7 @@ const Home = () => {
     <>
     {/* <img src={Hero} alt="Sunset Picture" /> */}
     <div>
-      <h1>Happy Welcome</h1>
+      <h1>Happy Welcome :) </h1>
     </div>
     </>
   )
