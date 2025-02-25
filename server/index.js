@@ -9,30 +9,34 @@ import sunsetsRouter from "./routes/sunsetsRoute.js";
 
 const app = express();
 
-const port = process.env.PORT || 4567;
+const port = process.env.PORT || 4004;
 // we define on which port our backend is going to run. you can put any number here between 4000 and 6000.
 // process.env.PORT- it`s alreday ready for when we deploy it. Local it runs on 4444, but we don`t now on which port it will run when we deployed it
 
-app.use(express.json());
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
-app.use(cors());
-// console.log("process.env.MONGODB_URI :>> ".yellow, process.env.MONGODB_URI);
+function addMiddleWares() {
+  app.use(express.json());
+  app.use(
+    express.urlencoded({
+      extended: true,
+    })
+  );
+  app.use(cors());
+  // console.log("process.env.MONGODB_URI :>> ".yellow, process.env.MONGODB_URI);
+}
 
-app.use("/api/", testRouter);
-app.use("/api/sunsets", sunsetsRouter);
+function startServer() {
+  app.listen(port, () => {
+    console.log(`Server is running on  port ${port}`.bgGreen);
+    //   console.log("Server is running on " + port + "port".bgGreen);
+  });
+}
 
-app.listen(port, () => {
-  console.log(`Server is running on  port ${port}`.bgGreen);
-  //   console.log("Server is running on " + port + "port".bgGreen);
-});
+function loadRoutes() {
+  app.use("/api/", testRouter);
+  app.use("/api/sunsets", sunsetsRouter);
+}
 
-app.use("/api", testRouter);
-
-async function main() {
+async function DBConnection() {
   try {
     const mongoDBConnection = await mongoose.connect(process.env.MONGODB_URI);
     if (mongoDBConnection) {
@@ -43,4 +47,20 @@ async function main() {
   }
 }
 
-main();
+// async function controller () {
+//   await DBConnection();
+
+//   addMiddleWares();
+//   loadRoutes();
+//   startServer();
+// }
+// controller()
+
+// IIFE (Immediately Invoked Function Expression) () ()
+(async function () {
+  await DBConnection();
+
+  addMiddleWares();
+  loadRoutes();
+  startServer();
+})();
