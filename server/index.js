@@ -6,6 +6,7 @@ import * as dotenv from "dotenv";
 dotenv.config(); // Initialise dotenv
 import mongoose from "mongoose";
 import sunsetsRouter from "./routes/sunsetsRoute.js";
+import userRouter from "./routes/usersRoute.js";
 
 const app = express();
 
@@ -34,6 +35,7 @@ function startServer() {
 function loadRoutes() {
   app.use("/api/", testRouter);
   app.use("/api/sunsets", sunsetsRouter);
+  app.use("/api/users", userRouter);
 }
 
 async function DBConnection() {
