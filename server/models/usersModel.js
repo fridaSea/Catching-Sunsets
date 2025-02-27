@@ -11,16 +11,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      validate: {
-        validator: function (v) {
-          return v.length > 6;
-        },
-        message: `password {VALUE} is too short, should have more than 6 characters`,
-        // message: (props) => {
-        //   console.log('props :>> ', props);
-        //   return `username {VALUE} is too short, should be bigger than 3`
-        // }
-      },
+      // Length of the password can`t be checked, because the hashed password is always super long
       // minLength: [
       //   6,
       //   "Password is too short, should have more than 6 characters",
