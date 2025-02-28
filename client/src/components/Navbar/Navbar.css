@@ -1,115 +1,121 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-ul{
-    list-style: none;
+ul {
+  list-style: none;
 }
 
-a{
-    text-decoration: none;
-    color: inherit;
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-
-.header{
-    background-color: rgb(19,22,26);
+.header {
+  background-color: rgb(19, 22, 26);
 }
 
-.header-content{
-    display: flex;
-    align-items: center;
-    background-color: black;
-    justify-content: space-between;
-    padding: 0 30px;
-    min-height: 61px;
-    width: 100%;
-    position: relative;
-    z-index: 10;
+.header-content {
+  display: flex;
+  align-items: center;
+  background-color: black;
+  justify-content: space-between;
+  padding: 0 30px;
+  min-height: 61px;
+  width: 100%;
+  position: relative;
+  z-index: 10;
 }
 
-.logo{
-    color: #fff;
-    font-size: 23px;
-    letter-spacing: -1.5px;
-    font-weight: 500;
-    column-gap: 40px;
+.logo {
+  color: #fff;
+  font-size: 23px;
+  letter-spacing: -1.5px;
+  font-weight: 500;
+  column-gap: 40px;
 }
 
 /* .logo-container{
     
 } */
 
-.nav{
-    transition: all 0.3s ease-in-out;
-    transition: transform 0.3s ease-in-out; 
+.nav {
+  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
 }
 
-
-.nav-list{
-    display: flex;
-    column-gap: 40px;
+.nav-list {
+  display: flex;
+  column-gap: 40px;
 }
 
-
-
-.nav-link{
-    color: rgba(255,255,255,0.75);
-    font-size: 15px;
-    transition: all 0.4s;
+.nav-link {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 15px;
+  transition: all 0.4s;
 }
 
 .nav-link:hover,
-.nav-link:focus{
-    color: rgba(255,255,255,1);
+.nav-link:focus {
+  color: rgba(255, 255, 255, 1);
 }
 
-.hamburger-menu{
-    display: none;
-    cursor: pointer;
+.hamburger-menu {
+  display: none;
+  cursor: pointer;
 }
 
-.bar{
-    height: 2px;
-    width: 27px;
-    background-color: #fff;
-    margin: 5px 0;
-    opacity: 0.8;
-    transition: all 0.3s ease-in-out;
+.bar {
+  height: 2px;
+  width: 27px;
+  background-color: #fff;
+  margin: 5px 0;
+  opacity: 0.8;
+  transition: all 0.3s ease-in-out;
 }
 
- /* Navbar slides in from the left */
+/* Navbar slides in from the left */
 /* .nav--open{
     transform: translate(0) !important;
 } */
 
 /* Navbar slides in from the top */
-.nav--open{
-    transform: translate(0) !important;
-    margin-top: 60px;
+.nav--open {
+  transform: translate(0) !important;
+  margin-top: 60px;
 }
 
-.hamburger-menu--open .bar:nth-child(1){
-    transform: translateY(7px) rotate(45deg);
-}
- 
-.hamburger-menu--open .bar:nth-child(2){
-    opacity: 0;
+.hamburger-menu--open .bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
 }
 
-.hamburger-menu--open .bar:nth-child(3){
-    transform: translateY(-7px) rotate(-45deg);
+.hamburger-menu--open .bar:nth-child(2) {
+  opacity: 0;
 }
 
-.nav-active{
-    color: #5fe9e0 !important;
+.hamburger-menu--open .bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
+.nav-active {
+  color: #5fe9e0 !important;
+}
+/* ! CSS to apply to the content of components */
+.component-content-container {
+  padding: 20px;
+  padding-top: 50px;
+  min-height: 100vh;
+  transition: transform 0.3s ease-in-out;
+}
 @media (max-width: 650px) {
-    /* Navbar slides in from the left */
-    /* .nav {
+  /* ! CSS to apply to the content of components */
+  .component-content-container.content-container-menu-open {
+    transform: translateY(180px);
+  }
+  /* Navbar slides in from the left */
+  /* .nav {
         position: fixed;
         top: 60px;
         left: 0;
@@ -118,35 +124,35 @@ a{
         padding: 10px 0 25px;
         transform: translateX(-100%);
     } */
-     
-    /* Navbar slides in from the top */
-    .nav {
-        position: fixed;
-        top: 0px;
-        left: 0;
-        background-color: rgb(19,22,26);
-        width: 100%;
-        padding: 10px 0 25px;
-        transform: translateY(-100%);
-        z-index: 8;
-          /* z-index - sorgt dafür, dass das hamburger menu HINTER dem Logo angeordnet wird */
-    }
 
-    .nav-list{
-        flex-direction: column;
-        align-items: center; 
-        row-gap: 20px;
-    }
+  /* Navbar slides in from the top */
+  .nav {
+    position: fixed;
+    top: 0px;
+    left: 0;
+    background-color: rgb(19, 22, 26);
+    width: 100%;
+    padding: 10px 0 25px;
+    transform: translateY(-100%);
+    z-index: 8;
+    /* z-index - sorgt dafür, dass das hamburger menu HINTER dem Logo angeordnet wird */
+  }
 
-    .nav-link{
-        font-size: 14px;
-    }
+  .nav-list {
+    flex-direction: column;
+    align-items: center;
+    row-gap: 20px;
+  }
 
-    .hamburger-menu{
-        display: block;
-    }
+  .nav-link {
+    font-size: 14px;
+  }
 
-    .nav-container{
-       position: relative;
-    }
+  .hamburger-menu {
+    display: block;
+  }
+
+  .nav-container {
+    position: relative;
+  }
 }
