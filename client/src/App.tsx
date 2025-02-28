@@ -7,6 +7,7 @@ import './App.css'
 import Navbar from "./components/Navbar/Navbar";
 import Sunsets from "./pages/Sunsets/Sunsets";
 import Profile from "./pages/Profile/Profile";
+import Footer from "./components/Footer/Footer";
 
 const Root = () => {
   return (
@@ -14,7 +15,7 @@ const Root = () => {
     {/* TO DO - Footer einfügen */}
      <Navbar/>  
      <Outlet/>  
-     {/* <Footer/>   */}
+     <Footer/>  
     </>
   )
 }
