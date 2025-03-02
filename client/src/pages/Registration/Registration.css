@@ -1,0 +1,104 @@
+:root{
+    accent-color: #5fe9e0;
+    /* color: black; */
+}
+
+input{
+    color:white
+}
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+html{
+    color: white;
+    text-align: center;
+}
+
+body{
+    min-height: 100vh;
+    /* background-size: cover;
+    background-position: right;
+    overflow: hidden; */
+}
+
+.wrapper{
+    box-sizing: border-box;
+    background-color: black;
+    height: 100vh;
+    width: max(40%, 600px);
+    padding: 10px;
+    border-radius: 0 20px 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* h1 {
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+} */
+
+form{
+    width: min(400px, 100%);
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-item{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+form label{
+    flex-shrink: 0;
+    height: 50px;
+    width: 50px;
+    background-color: #5fe9e0;
+    /* fill: rgb(0, 0, 0); */
+    /* TO DO: Prüfen, ob fill überhaupt funktioniert oder hier anders bezeichnet werden muss */
+    color:rgb(0, 0, 0);
+    font-size: 1.5rem;
+    font-weight: 500;
+    /* color, font-size / font-weight ist für das @zeichen, da das ja ein icon ist */
+    border-radius: 10px 0 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+form input {
+    box-sizing: border-box;
+    flex-grow: 1;
+    min-width: 0;
+    height: 50px;
+    padding: 1em;
+    font: inherit;
+    border-radius: 0 10px 10px 0;
+    border: none;
+    border-left: none;
+    /* border: 2px solid #c7fdfa; */
+    background-color: #c7fdfa;
+    transition: 150ms ease;
+}
+
+form input:hover{
+    border: 2px solid #5fe9e0;
+}
+
+form input:focus{
+    outline: none;
+    /* verhindert, das die einstellung vom browser auf das feld übertragen wird, sodass kein anerer rahmen noch hinzu kommt */
+    border-color: black;
+
+}

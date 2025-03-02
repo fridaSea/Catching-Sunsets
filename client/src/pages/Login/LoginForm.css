@@ -1,0 +1,15 @@
+.wrapper{
+    display: block;
+    border: 1px solid #fdfdfd;
+    border-radius: 10px;
+
+
+}
+
+.login-form{
+    text-align: center;
+}
+
+input{
+    /* width: 100%; */
+}

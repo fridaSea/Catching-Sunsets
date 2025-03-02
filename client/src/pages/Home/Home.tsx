@@ -13,6 +13,7 @@ const Home = () => {
         }`}
       >
         <h1>Happy Welcome :) </h1>
+        <p> Here you can find a lot of interesting content.</p>
       </div>
     </>
   );
