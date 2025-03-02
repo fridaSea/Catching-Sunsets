@@ -1,10 +1,17 @@
-import React from 'react'
+
+import React, { useContext } from "react";
+import { MenuContext } from "../../context/MenuContext";
 import './Registration.css'
 
+
 function Registration() {
+  const { isMenuOpen } = useContext(MenuContext);
   return (
     <>
-    <div className='wrapper'>
+      
+    <div className={`wrapper component-content-container ${
+        isMenuOpen ? "content-container-menu-open" : ""
+      }`}>
       <h1>Register now!</h1>
    
 
@@ -97,6 +104,6 @@ function Registration() {
   )
 }
 
-export default Registration
+export default Registration;
 
-// modal see: https://www.youtube.com/watch?v=QButPwQ51wQ 
+// modal see: https://www.youtube.com/watch?v=QButPwQ51wQ

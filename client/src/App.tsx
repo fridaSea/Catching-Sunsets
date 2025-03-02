@@ -7,43 +7,42 @@ import Navbar from "./components/Navbar/Navbar";
 import Sunsets from "./pages/Sunsets/Sunsets";
 import Profile from "./pages/Profile/Profile";
 import Footer from "./components/Footer/Footer";
+import { MenuProvider } from "./context/MenuContext";
 
 const Root = () => {
   return (
     <>
-    {/* TO DO - Footer einfügen */}
-     <Navbar/>  
-     <Outlet/>  
-     <Footer/>  
+      {/* TO DO - Footer einfügen */}
+      <Navbar />
+      <Outlet />
+      <Footer />
     </>
-  )
-}
-
+  );
+};
 
 function App() {
-
   return (
     <>
-    {/* <AuthContextProvider> */}
-      <BrowserRouter>
-        <Routes>
-          <Route element={<Root/>}>
-          <Route index element={<Home/>}/>
-          <Route path="/home" element={<Home/>}/>
-          <Route path="/registration" element={<Registration/>}/>
-          <Route path="/login" element={<LoginForm/>}/>
-          <Route path="/sunsets" element={<Sunsets/>}/>
-          <Route path="/profile" element={<Profile/>}/>
-          {/* <Route path="/faq" element={<FAQ/>}/> */}
+      {/* <AuthContextProvider> */}
+      <MenuProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<Root />}>
+              <Route index element={<Home />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/registration" element={<Registration />} />
+              <Route path="/login" element={<LoginForm/>}/>
+              <Route path="/sunsets" element={<Sunsets />} />
+              <Route path="/profile" element={<Profile/>}/>
+              {/* <Route path="/faq" element={<FAQ/>}/> */}
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </MenuProvider>
 
-          </Route>
-        </Routes>
-      </BrowserRouter>
-     {/* </AuthContextProvider> */}
+      {/* </AuthContextProvider> */}
     </>
-  )
+  );
 }
 
-export default App
-
-
+export default App;
