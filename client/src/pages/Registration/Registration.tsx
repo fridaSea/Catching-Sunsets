@@ -1,105 +1,181 @@
-
-import React, { useContext } from "react";
-import { MenuContext } from "../../context/MenuContext";
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from "react";
+// import { MenuContext } from "../../context/MenuContext";
 import './Registration.css'
+import { RegisterOkResponse, User, UserRegisterForm } from "../../types/customTypes";
 
 
 function Registration() {
-  const { isMenuOpen } = useContext(MenuContext);
+  // const { isMenuOpen } = useContext(MenuContext);
+
+  const [showPassword, setShowPassword] = useState(false)
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
+
+  const [password, setPassword] = useState("")
+
+  const [newUser, setNewUser] = useState<UserRegisterForm | null >(null)
+  const [user, setUser] = useState<User | null >(null)
+  const [emailValid, setEmailValid] = useState<boolean >(true)
+  const [error, setError] = useState<string >(undefined) 
+  //To DO - confirmation for registration - we should have in our AuthContext our user, that we will bring from AuthContext - if you want to leave your user logged in after the registration (Min 19 - Video Mongoose model validation & Image preview or it is called "second part" not sure) 
+
+  const handleRegisterInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log('e.target.name :>> ', e.target.name);
+    console.log('e.target.value :>> ', e.target.value);
+    
+    setNewUser({...newUser!, [e.target.name] : e.target.value})
+  }
+
+  const emailInvalidChange = (e: any) => {
+    console.log(e)
+  }
+
+  const submitRegister = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log('newUser :>> ', newUser);
+    
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+    const urlencoded = new URLSearchParams();
+    // TO DO - Do not forget to do Input validation (user has to be proper email, username lenght, if there, password should contain at least xy characters/ letters, numbers and symbols )
+    if (newUser){
+      urlencoded.append("username", newUser.username);
+      urlencoded.append("email", newUser.email);
+      urlencoded.append("password", newUser.password);
+    } else {
+      console.log("no empty forms allowed")
+    }
+    // TO DO - if the required fields are not fulfilled, then a message and register with Register Button should not be possible 
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: urlencoded,
+      // redirect: "follow"
+    };
+
+    try {
+      const response = await fetch("http://localhost:4004/api/users/register", requestOptions)
+      const result = await response.json() as RegisterOkResponse;
+
+      if(response.status < 400){
+        // console.log(result.message)
+        alert(result.message);
+        setUser(result.user);
+      } else {
+        // ERROR MESSAGE - Coming from the Backend
+        console.log(result.message);
+        setError(result.message)
+      }
+
+    } catch (error) {
+      console.log('error :>> ', error);
+    }
+
+      }
+
   return (
     <>
-      
-    <div className={`wrapper component-content-container ${
-        isMenuOpen ? "content-container-menu-open" : ""
-      }`}>
+      <div className='wrapper'> 
       <h1>Register now!</h1>
    
 
-    <form>
-      <div className='form-item'>
+    <form onSubmit={submitRegister}>
+     {/* TO DO Full Name noch als Beispiel für die Vorlage mit aufnehmen https://ukpaiudoprecious0.medium.com/master-form-validation-in-react-js-2b4b163932f5 */}
+      
+      <div className='form-item incorrect'>
         <label htmlFor="username-input">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
+        <span className="icon icon-user"></span>
         </label>
-        <input type="text" id="username-input" name="username" placeholder='Username'/>
+        <input 
+          type="text" 
+          id="username-input" 
+          name="username" 
+          placeholder='Username' 
+          pattern="^[A-Za-z0-9]{3,16}$"
+          // allow the user to make use of any characters apart from special characters and whitespaces
+          onChange={handleRegisterInputChange}
+        />
+        <div className="error">Your Username can contain numbers and normal characters and should be 3-16 Characters long</div>
       </div>
       
-      <div className='form-item'>
+      <div className='form-item incorrect'>
         <label htmlFor="email-input">
-          <span>@  </span>
+        <span className="icon icon-send"></span>
         </label>
-        <input required type="email" id="email-input" name="email" placeholder='Email'/>
+        <input
+          required 
+          type="email" 
+          id="email-input" 
+          name="email" 
+          placeholder='Email'
+          pattern=".{6,}"
+          onChange={handleRegisterInputChange}
+        />
+        <div className="error">This is not a valid Email Adress. You E-Mail Adress must at least has 6 characters.</div>
       </div>
       
       <div className='form-item'>
         <label htmlFor="password-input">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"/></svg>
+        <span className="icon icon-lock"></span>
         </label>
-        <input required type="password" id="password-input" name="password" placeholder='Password'/>
+        <input 
+          required 
+          // type="password" 
+          type={(showPassword === true)? "text": "password"}
+          id="password-input" 
+          name="password" 
+          placeholder='Password'
+          onChange={handleRegisterInputChange}
+          // LIVE
+          //pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$"
+          //TESTING
+          // pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$"
+          // you checked if the password contains, a lowercase and uppercase letter, a number, and any special character, and also if the password is up to 6 characters long.
+          
+        />
+         {/* LIVE */}
+         {/* <div className="error">A strong password should have at least one <br /> uppercase and lowercase letter, one number and any <br /> special character and should be at least 6 characters</div> */}
+         {/* TESTING */}
+         <div className="error">Your password should have at least 6 characters</div>
+        <div className="password-eye">
+        {(showPassword === true)? 
+        <span className="icon icon-visibility" onClick={handleShowPassword}/> : <span className="icon icon-visibility_off" onClick={handleShowPassword}/>}
+        </div>
       </div>
       
       <div className='form-item'>
         <label htmlFor="password-input">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"/></svg>
+        <span className="icon icon-lock"></span>
         </label>
-        <input type="password" id="repeat-password-input" name="repeat-password" placeholder='Repeat Password'/>
+        <input 
+          required 
+          type="password" 
+          id="repeat-password-input" 
+          name="repeat-password" 
+          placeholder='Repeat Password'
+          //pattern={password}
+          onPaste={e=>{
+            e.preventDefault()
+            false
+         }}
+          // Password zur wiederholung reinkopieren ist hiermit nicht möcglich
+          onChange={handleRegisterInputChange}
+        />
+        <div className="error">Passwords does not match</div>
       </div>
 
         
         <button type="submit">Register</button>
+        {error ? error : ''}
        
     </form>
-    <p>Already have an account? Login 
-         <a href="./login"> here</a>
-        .</p>
+    <p>Already have an account?   
+         <a href="./login"> Login.</a>
+    </p>
     </div>
-{/* <div className='form-container-wrapper'>
-      <div className="form-container">
-      <h2>Registration</h2>
-      <form className="registration-form" onSubmit={handleSubmitRegistration}>
-
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={handleEmailChange}
-            // onChange={handleChange}
-            required
-          />
-        </div>
-  TO DO - Icon einbauen um das Passwort zu verstecken bzw.anzuzeigen 
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={handlePasswordChange}
-            // onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div>
-          <Button type="submit">Register</Button>
-        </div>
- BUTTON EINFÜGEN, STYLEN UND NICHT ONCLICK???? 
-
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-        {successMessage && <p className="success-message">{successMessage}</p>}
-     DO THIS WITH A LITTLE POP UP AND DISPLAY THE MESSAGE THER & WITH AN OKAY BUTTON AND ONCLICK USE THE NAVIGATE TO REDIRECT!!!! 
-
-        <div>
-          <p>Already have an account? Login <Link to="/login" className='Link' > here </Link>
-          </p>
-          
-        </div>
-      </form>
-    </div>
-    </div> */}
     </>
   )
 }

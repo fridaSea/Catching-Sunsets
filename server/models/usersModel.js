@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      minLength: [6, "E-Mail Adress is too short, should be bigger than 6"],
+      minLength: [5, "E-Mail Adress is too short, should be bigger than 5"],
     },
     password: {
       type: String,
