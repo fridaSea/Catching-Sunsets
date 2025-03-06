@@ -8,6 +8,7 @@ import Profile from "./pages/Profile/Profile";
 import Footer from "./components/Footer/Footer";
 import { MenuProvider } from "./context/MenuContext";
 import NavBar from "./components/Navbar/Navbar";
+import { useEffect } from "react";
 
 const Root = () => {
   return (
@@ -21,6 +22,17 @@ const Root = () => {
 };
 
 function App() {
+  // TO DO - This has to be moved to the AuthContext, when it is ready
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      console.log("%c user is logged in", "color:green");
+    } else {
+      console.log("%c user is logged out", "color:red");
+    }
+    return () => {};
+  }, []);
+
   return (
     <>
       {/* <AuthContextProvider> */}

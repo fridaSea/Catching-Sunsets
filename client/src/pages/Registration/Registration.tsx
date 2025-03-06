@@ -1,17 +1,12 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  InvalidEvent,
-  useContext,
-  useState,
-} from "react";
-import { MenuContext } from "../../context/MenuContext";
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from "react";
+// import { MenuContext } from "../../context/MenuContext";
 import "./Registration.css";
 import {
   RegisterOkResponse,
   User,
   UserRegisterForm,
 } from "../../types/customTypes";
+import { baseUrl } from "../../utilities/urls";
 
 function Registration() {
   const { isMenuOpen } = useContext(MenuContext);
@@ -67,7 +62,7 @@ function Registration() {
 
     try {
       const response = await fetch(
-        "http://localhost:4004/api/users/register",
+        `${baseUrl}/api/users/register`,
         requestOptions
       );
       const result = (await response.json()) as RegisterOkResponse;

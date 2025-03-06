@@ -1,31 +1,47 @@
-import { FormEvent, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import "./LoginForm.css";
-import { User } from "../../types/customTypes";
-import { MenuContext } from "../../context/MenuContext";
+import {
+  LoginCredentials,
+  LoginOkResponse,
+  User,
+} from "../../types/customTypes";
+import { baseUrl } from "../../utilities/urls";
 
 function LoginForm() {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
-  const [newUser, setNewUser] = useState<UserRegisterForm | null>(null);
+  const [loginCredentials, setLoginCredentials] =
+    useState<LoginCredentials | null>(null);
+  // User (below) should be in the Auth Context TO DO
   const [user, setUser] = useState<User | null>(null);
 
+  // Visibility of the password
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleLoginInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log("e.target.name :>> ", e.target.name);
+    console.log("e.target.value :>> ", e.target.value);
+
+    setLoginCredentials({
+      ...loginCredentials!,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const submitLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("newUser :>> ", newUser);
+    // console.log('loginCredentials :>> ', loginCredentials);
 
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
     const urlencoded = new URLSearchParams();
     // TO DO - Do not forget to do Input validation (user has to be proper email, username lenght, if there, password should contain at least xy characters/ letters, numbers and symbols )
-    if (newUser) {
-      urlencoded.append("username", newUser.username);
-      urlencoded.append("email", newUser.email);
-      urlencoded.append("password", newUser.password);
+    if (loginCredentials) {
+      urlencoded.append("email", loginCredentials.email);
+      urlencoded.append("password", loginCredentials.password);
     } else {
       console.log("no empty forms allowed");
     }
@@ -40,25 +56,40 @@ function LoginForm() {
 
     try {
       const response = await fetch(
-        "http://localhost:4004/api/users/register",
+        `${baseUrl}/api/users/login`,
         requestOptions
       );
-      const result = (await response.json()) as RegisterOkResponse;
-
-      if (response.status < 400) {
-        // console.log(result.message)
-        alert(result.message);
-        setUser(result.user);
-      } else {
-        // ERROR MESSAGE - Coming from the Backend
-        console.log(result.message);
-        setError(result.message);
+      const result = (await response.json()) as LoginOkResponse;
+      console.log("result :>> ", result);
+      alert(result.message);
+      if (!result.token) {
+        // TO DO - do something about it
       }
+      // if token is there, we gonna store it in th elocal storage of the browser
+      if (result.token) {
+        localStorage.setItem("token", result.token);
+      }
+      setUser(result.user);
+
+      // if(response.status < 400){
+      //   // console.log(result.message)
+      //   alert(result.message);
+      // } else {
+      //   // ERROR MESSAGE - Coming from the Backend
+      //   console.log(result.message);
+      //   setError(result.message)
+      // }
     } catch (error) {
       console.log("error :>> ", error);
     }
   };
+  // TO DO - Login sucessfull - Redirect to some Page
 
+  // TO DO - Logout button - also has to be moved
+  const logout = () => {
+    localStorage.removeItem("token");
+    // setUser(null) -> in the AuthCOntext
+  };
   return (
     <div
       className={`component-content-container ${

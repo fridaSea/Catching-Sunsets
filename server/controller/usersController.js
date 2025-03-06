@@ -1,5 +1,9 @@
 import UserModel from "../models/usersModel.js";
-import { hashingPassword } from "../utilities/hashingPassword.js";
+import {
+  hashingPassword,
+  verifyPassword,
+} from "../utilities/passwordServices.js";
+import { generateToken } from "../utilities/tokenServices.js";
 
 const registerNewUser = async (req, res) => {
   const { email, password, username, img } = req.body;
@@ -61,9 +65,67 @@ const registerNewUser = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       error: "Something went wrong during registration",
+      // errorStack: error,
       message: error.message,
     });
   }
 };
 
-export { registerNewUser };
+const loginNewUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  //1. Find user in database
+  try {
+    const existingUser = await UserModel.findOne({ email: req.body.email });
+    if (!existingUser) {
+      return res.status(404).json({
+        message: "User doesn`t have an account. You have to register first.",
+      });
+    }
+    if (existingUser) {
+      // 2. Verify password
+      const isPasswordCorrect = await verifyPassword(
+        req.body.password,
+        existingUser.password
+      );
+
+      if (!isPasswordCorrect) {
+        return res.status(401).json({
+          message: "Incorrect Password. Please try again.",
+        });
+      }
+
+      if (isPasswordCorrect) {
+        // 3. Generate Token
+        const token = generateToken(existingUser._id);
+        if (!token) {
+          return res.status(500).json({
+            error: "Soemthing went wrong, try to login later.",
+          });
+        }
+
+        if (token) {
+          return res.status(200).json({
+            message: "Login successful.",
+            user: {
+              id: existingUser._id,
+              username: existingUser.username,
+              email: existingUser.email,
+              img: existingUser.img,
+            },
+            token: token,
+            // token -> you can also only write this, it is the same as the above
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.log("error :>> ", error);
+    return res.status(500).json({
+      error: "Something went wrong during login",
+      errorMessage: error.message,
+    });
+  }
+};
+
+export { registerNewUser, loginNewUser };
