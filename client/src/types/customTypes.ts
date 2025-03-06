@@ -22,3 +22,11 @@ export type RegisterOkResponse = {
     message: string;
     user: string;
 }
+
+export type LoginCredentials = Pick<User, "email" | "password">
+
+export type LoginOkResponse = {
+    message: string;
+    user: string;
+    token:string;
+}
