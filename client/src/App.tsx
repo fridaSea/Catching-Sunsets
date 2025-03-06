@@ -1,19 +1,19 @@
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
-import Home from './pages/Home/Home';
-import Registration from './pages/Registration/Registration';
-import LoginForm from './pages/Login/LoginForm';
-import './App.css'
-import Navbar from "./components/Navbar/Navbar";
+import Home from "./pages/Home/Home";
+import Registration from "./pages/Registration/Registration";
+import LoginForm from "./pages/Login/LoginForm";
+import "./App.css";
 import Sunsets from "./pages/Sunsets/Sunsets";
 import Profile from "./pages/Profile/Profile";
 import Footer from "./components/Footer/Footer";
 import { MenuProvider } from "./context/MenuContext";
+import NavBar from "./components/Navbar/Navbar";
 
 const Root = () => {
   return (
     <>
       {/* TO DO - Footer einfügen */}
-      <Navbar />
+      <NavBar />
       <Outlet />
       <Footer />
     </>
@@ -31,9 +31,9 @@ function App() {
               <Route index element={<Home />} />
               <Route path="/home" element={<Home />} />
               <Route path="/registration" element={<Registration />} />
-              <Route path="/login" element={<LoginForm/>}/>
+              <Route path="/login" element={<LoginForm />} />
               <Route path="/sunsets" element={<Sunsets />} />
-              <Route path="/profile" element={<Profile/>}/>
+              <Route path="/profile" element={<Profile />} />
               {/* <Route path="/faq" element={<FAQ/>}/> */}
             </Route>
           </Routes>
