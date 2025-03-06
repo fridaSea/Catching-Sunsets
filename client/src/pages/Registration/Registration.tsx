@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, InvalidEvent, useState } from "react";
 // import { MenuContext } from "../../context/MenuContext";
 import './Registration.css'
 import { RegisterOkResponse, User, UserRegisterForm } from "../../types/customTypes";
+import { baseUrl } from "../../utilities/urls";
 
 
 function Registration() {
@@ -57,7 +58,7 @@ function Registration() {
     };
 
     try {
-      const response = await fetch("http://localhost:4004/api/users/register", requestOptions)
+      const response = await fetch(`${baseUrl}/api/users/register`, requestOptions)
       const result = await response.json() as RegisterOkResponse;
 
       if(response.status < 400){
