@@ -1,81 +1,58 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import "./Navbar.css";
 import { NavLink } from "react-router";
 import { MenuContext } from "../../context/MenuContext";
-// import profile_icon from '../../../public/profile_icon.png'
 
-// Responsive Navbar with animated hamburger menu
-function Navbar() {
-  // const {user, login, logout} = useContext(AuthContext)
+const NavBar = () => {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
-
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const openMenu = () => {
-    //   setIsOpen(!isOpen);
+  const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <header className="header">
-      <div className="header-content">
-        <div className="logo-container">
-          <a href="/" className="logo">
-            Catching Sunsets
-          </a>
-        </div>
-
-        <div className="nav-container">
-          <nav className={"nav " + (isMenuOpen ? "nav--open" : "")}>
-            <ul className="nav-list">
-              <li className="nav-item">
-                <NavLink
-                  to="/sunsets"
-                  className={({ isActive }) =>
-                    isActive ? "nav-link nav-active" : "nav-link"
-                  }
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sunsets
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink
-                  to="/registration"
-                  className={({ isActive }) =>
-                    isActive ? "nav-link nav-active" : "nav-link"
-                  }
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Registration
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink
-                  to="/profile"
-                  className={({ isActive }) =>
-                    isActive ? "nav-link nav-active" : "nav-link"
-                  }
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Profile
-                  {/* <img src={profile_icon} alt="Profile-Icon" /> */}
-                </NavLink>
-              </li>
-            </ul>
-          </nav>
-        </div>
-
-        <div
-          className={`hamburger-menu ${isOpen ? "hamburger-menu--open" : ""}`}
-          onClick={openMenu}
-        >
-          <div className="bar"></div>
-          <div className="bar"></div>
-          <div className="bar"></div>
-        </div>
+    <nav className="navbar">
+      <div className="navbar-logo">
+        <a href="/" className="logo">
+          Catching Sunsets
+        </a>
       </div>
-    </header>
-  );
-}
 
-export default Navbar;
+      <button
+        className={`hamburger-menu ${isMenuOpen ? "hamburger-menu--open" : ""}`}
+        onClick={toggleMenu}
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div className={"navbar-links" + (isMenuOpen ? " " + "active" : "")}>
+        <NavLink
+          to="/sunsets"
+          className="nav-link"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Sunsets
+        </NavLink>
+
+        <NavLink
+          to="/registration"
+          className="nav-link"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Registration
+        </NavLink>
+
+        <NavLink
+          to="/profile"
+          className="nav-link"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Profilesss
+        </NavLink>
+      </div>
+    </nav>
+  );
+};
+
+export default NavBar;
