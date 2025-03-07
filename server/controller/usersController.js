@@ -128,4 +128,25 @@ const loginNewUser = async (req, res) => {
   }
 };
 
-export { registerNewUser, loginNewUser };
+const getProfile = async (req, res) => {
+  console.log("get profile");
+  console.log("req.user :>> ", req.user);
+  if (!req.user) {
+    return res.status(404).json({
+      error: "User needs to login again",
+    });
+  }
+  if (req.user) {
+    return res.status(200).json({
+      message: "User profile",
+      user: {
+        id: req.user._id,
+        username: req.user.username,
+        email: req.user.email,
+        img: req.user.img,
+      },
+    });
+  }
+};
+
+export { registerNewUser, loginNewUser, getProfile };
