@@ -1,12 +1,17 @@
 import { ChangeEvent, FormEvent, InvalidEvent, useState } from "react";
 // import { MenuContext } from "../../context/MenuContext";
-import './Registration.css'
-import { RegisterOkResponse, User, UserRegisterForm } from "../../types/customTypes";
+import "./Registration.css";
+import {
+  RegisterOkResponse,
+  User,
+  UserRegisterForm,
+} from "../../types/customTypes";
 import { baseUrl } from "../../utilities/urls";
 // import RegistrationSunset from '../../../public/RegistrationSunset.jpeg'
 
-
 function Registration() {
+  const { isMenuOpen } = useContext(MenuContext);
+
   // const { isMenuOpen } = useContext(MenuContext);
   // const emailInvalidChange = (e: any) => {
   //   console.log(e)
@@ -25,8 +30,11 @@ function Registration() {
   });
 
   const handleShowPassword = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
+
+
+  //To DO - confirmation for registration - we should have in our AuthContext our user, that we will bring from AuthContext - if you want to leave your user logged in after the registration (Min 19 - Video Mongoose model validation & Image preview or it is called "second part" not sure)
 
   const handleShowRepeatedPassword = () => {
     setShowRepeatedPassword(!showRepeatedPassword)
@@ -73,21 +81,21 @@ function Registration() {
 
   const submitRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('newUser :>> ', newUser);
-    
+    console.log("newUser :>> ", newUser);
+
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
     const urlencoded = new URLSearchParams();
     // TO DO - Do not forget to do Input validation (user has to be proper email, username lenght, if there, password should contain at least xy characters/ letters, numbers and symbols )
-    if (newUser){
+    if (newUser) {
       urlencoded.append("username", newUser.username);
       urlencoded.append("email", newUser.email);
       urlencoded.append("password", newUser.password);
     } else {
-      console.log("no empty forms allowed")
+      console.log("no empty forms allowed");
     }
-    // TO DO - if the required fields are not fulfilled, then a message and register with Register Button should not be possible 
+    // TO DO - if the required fields are not fulfilled, then a message and register with Register Button should not be possible
 
     const requestOptions = {
       method: "POST",
@@ -96,27 +104,34 @@ function Registration() {
     };
 
     try {
-      const response = await fetch(`${baseUrl}/api/users/register`, requestOptions)
-      const result = await response.json() as RegisterOkResponse;
+      const response = await fetch(
+        `${baseUrl}/api/users/register`,
+        requestOptions
+      );
+      const result = (await response.json()) as RegisterOkResponse;
 
-      if(response.status < 400){
+      if (response.status < 400) {
         // console.log(result.message)
         alert(result.message);
         setUser(result.user);
       } else {
         // ERROR MESSAGE - Coming from the Backend
         console.log(result.message);
-        setError(result.message)
+        setError(result.message);
       }
-
     } catch (error) {
-      console.log('error :>> ', error);
+      console.log("error :>> ", error);
     }
-
-      }
+  };
 
   return (
     <>
+      <div
+      className={`component-content-container ${
+        isMenuOpen ? "content-container-menu-open" : ""
+      }`}
+    >
+        
       <div className='wrapper'> 
       <h1>Register now!</h1>
    
@@ -256,6 +271,7 @@ function Registration() {
     <p>Already have an account?   
          <a href="./login"> Login.</a>
     </p>
+    </div>
     </div>
 
     {/* <div>

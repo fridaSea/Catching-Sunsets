@@ -1,7 +1,10 @@
+import { Form } from "react-router";
+import { MenuContext } from "../../context/MenuContext";
 import { useContext, useEffect } from 'react'
 import {AuthContext} from '../../context/AuthorizationContext'
 
 function Profile() {
+    const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
   // TO DO - WARUM ?? && Wie bekomme ich es hin, dass ich auf Profile in der Navbar klicke und das alles erscheint und nicht auf den Button "Get Profile"?
   //const [loggedUser, setLoggedUser] = useState<User | null>(null)
   const { loggedUser, getUserProfile } = useContext(AuthContext);
@@ -15,7 +18,11 @@ function Profile() {
   }, [getUserProfile]); // Die Funktion getUserProfile wird nur einmal aufgerufen, wenn die Komponente geladen wird
 
   return (
-    <div>
+    <div
+      className={`component-content-container ${
+        isMenuOpen ? "content-container-menu-open" : ""
+      }`}
+    >
       <h1>Your Profile</h1>
 
     <br />
@@ -33,9 +40,7 @@ function Profile() {
          } 
 
     </div>
-
-    
-  )
+  );
 }
 
-export default Profile
+export default Profile;
