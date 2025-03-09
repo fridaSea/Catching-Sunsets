@@ -9,6 +9,8 @@ import Footer from "./components/Footer/Footer";
 import { MenuProvider } from "./context/MenuContext";
 import NavBar from "./components/Navbar/Navbar";
 import { useEffect } from "react";
+import { AuthContextProvider } from "./context/AuthorizationContext";
+//import ProtectedRoute from "./components/ProtectedRoute";
 
 const Root = () => {
   return (
@@ -35,24 +37,30 @@ function App() {
 
   return (
     <>
-      {/* <AuthContextProvider> */}
-      <MenuProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<Root />}>
-              <Route index element={<Home />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/registration" element={<Registration />} />
-              <Route path="/login" element={<LoginForm />} />
-              <Route path="/sunsets" element={<Sunsets />} />
-              <Route path="/profile" element={<Profile />} />
-              {/* <Route path="/faq" element={<FAQ/>}/> */}
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </MenuProvider>
+      <AuthContextProvider>
+        <MenuProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<Root />}>
+                <Route index element={<Home />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/registration" element={<Registration />} />
+                <Route path="/login" element={<LoginForm/>}/>
+                <Route path="/sunsets" element={<Sunsets />} />
+                <Route path="/profile" element={<Profile />} />
+                {/* <Route path="/profile" element={
+                  <ProtectedRoute>
+                      <Profile/>
+                  </ProtectedRoute>
+                  }/> */}
+                
+                {/* <Route path="/faq" element={<FAQ/>}/> */}
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </MenuProvider>
 
-      {/* </AuthContextProvider> */}
+      </AuthContextProvider>
     </>
   );
 }

@@ -7,6 +7,8 @@ dotenv.config(); // Initialise dotenv
 import mongoose from "mongoose";
 import sunsetsRouter from "./routes/sunsetsRoute.js";
 import userRouter from "./routes/usersRoute.js";
+import passport from "passport";
+import passportStrategy from "./config/passportConfig.js";
 
 const app = express();
 
@@ -23,6 +25,8 @@ function addMiddleWares() {
   );
   app.use(cors());
   // console.log("process.env.MONGODB_URI :>> ".yellow, process.env.MONGODB_URI);
+  passport.initialize();
+  passport.use(passportStrategy);
 }
 
 function startServer() {

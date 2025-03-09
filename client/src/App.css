@@ -1,8 +1,9 @@
 #root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
   /* padding: 2rem; */
   text-align: center;
+  /* Take away the brackground if the sunsetpic should be shown */
   background: black bottom;
   color: white;
   height: 100%;
