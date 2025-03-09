@@ -30,3 +30,9 @@ export type LoginOkResponse = {
     user: string;
     token:string;
 }
+
+export type GetProfileOkResponse = {
+    message: string;
+    user: string;
+}
+// USER or user???

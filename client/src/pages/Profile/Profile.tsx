@@ -1,18 +1,36 @@
-import React from 'react'
-import { Form } from 'react-router'
+import { useContext, useEffect } from 'react'
+import {AuthContext} from '../../context/AuthorizationContext'
 
 function Profile() {
+  // TO DO - WARUM ?? && Wie bekomme ich es hin, dass ich auf Profile in der Navbar klicke und das alles erscheint und nicht auf den Button "Get Profile"?
+  //const [loggedUser, setLoggedUser] = useState<User | null>(null)
+  const { loggedUser, getUserProfile } = useContext(AuthContext);
+  //console.log('loggedUser :>> ', loggedUser);
+  // console.log('result.user :>> ', result.user)
+
+   // useEffect wird einmalig beim ersten Laden der Komponente ausgeführt
+   useEffect(() => {
+    // Profilinformationen automatisch abrufen, wenn die Seite geladen wird
+    getUserProfile();
+  }, [getUserProfile]); // Die Funktion getUserProfile wird nur einmal aufgerufen, wenn die Komponente geladen wird
+
   return (
     <div>
       <h1>Your Profile</h1>
 
-      <p>E-Mail: !!dynamisch einfügen!!</p>
+    <br />
+      {/* <button onClick={getUserProfile}>Get Profile</button> */}
 
-    
-      <div>
-        <p>Username:</p>
-      </div>
-      <input type='submit' value='Save'></input>
+    {/* if we have a user  */}
+     {loggedUser && <div>
+          <h2>Hi {loggedUser.username}</h2>
+          <img src={loggedUser.img} alt="users profile pic" style={{width:"150px", height:"auto"}}/>
+         <p>PLACEHOLDER - IMAGE UPLOAD</p>
+         <br />
+          <p>E-Mail: {loggedUser.email}</p> 
+          <p>Username: {loggedUser.username}</p>
+        </div>
+         } 
 
     </div>
 
