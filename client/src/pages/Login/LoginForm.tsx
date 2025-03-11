@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import "./LoginForm.css";
 import {
   LoginCredentials,
@@ -6,29 +6,64 @@ import {
   User,
 } from "../../types/customTypes";
 import { baseUrl } from "../../utilities/urls";
+import { MenuContext } from "../../context/MenuContext";
 
 function LoginForm() {
-  const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
-  const [loginCredentials, setLoginCredentials] =
-    useState<LoginCredentials | null>(null);
+  const { isMenuOpen } = useContext(MenuContext);
+
+   // Visibility of the password
+   const [showPassword, setShowPassword] = useState(false);
+   const handleShowPassword = () => {
+     setShowPassword(!showPassword);
+   };
+
+   const [user, setUser] = useState<User | null>(null);
+   
+  //  const [loginCredentials, setLoginCredentials] =
+  //   useState<LoginCredentials | null>(null);
+  const [loginCredentials, setLoginCredentials] = useState<LoginCredentials>({
+    email: '',
+    password: '',
+  });
+
   // User (below) should be in the Auth Context TO DO
-  const [user, setUser] = useState<User | null>(null);
+  const [fieldErrors, setFieldErrors] = useState({
+    email: '', 
+    password: '',
+  });
+ 
 
-  // Visibility of the password
-  const [showPassword, setShowPassword] = useState(false);
-  const handleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+ const handleLoginInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  setLoginCredentials({
+    ...loginCredentials!,
+    [e.target.name]: e.target.value,
+  });
+}
 
-  const handleLoginInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("e.target.name :>> ", e.target.name);
-    console.log("e.target.value :>> ", e.target.value);
+  const validateField = (name: string, value: string) => {
+    if (name === "email"){
+      if(!/.{6,}/.test(value)){
+        return "Your E-Mail Adress must at least has 6 characters."
+      } else if(!/.*@.*/.test(value)){
+        return "This is not a valid email adress"
+      }
+    }
+    if (name === "password" && value.length < 6){
+      return "Your password should have at least 6 characters"
+    }
+    return '';
+  }
 
-    setLoginCredentials({
-      ...loginCredentials!,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const errorMessage = validateField(name, value);
+    // const update  = {
+    //   email: fieldErrors.email, 
+    //   password: fieldErrors.password,
+    // }
+    // update[name] = errorMessage;
+    setFieldErrors({...fieldErrors, [name]: errorMessage});
+  }
 
   const submitLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,7 +86,6 @@ function LoginForm() {
       method: "POST",
       headers: myHeaders,
       body: urlencoded,
-      // redirect: "follow"
     };
 
     try {
@@ -61,11 +95,12 @@ function LoginForm() {
       );
       const result = (await response.json()) as LoginOkResponse;
       console.log("result :>> ", result);
+
       alert(result.message);
       if (!result.token) {
         // TO DO - do something about it
       }
-      // if token is there, we gonna store it in th elocal storage of the browser
+      // if token is there, we gonna store it in the local storage of the browser
       if (result.token) {
         localStorage.setItem("token", result.token);
       }
@@ -92,39 +127,57 @@ function LoginForm() {
   };
   return (
     <div
-      className={`component-content-container ${
+      className={`loginForm component-content-container ${
         isMenuOpen ? "content-container-menu-open" : ""
       }`}
     >
       <div className="wrapper">
         <h1>Login</h1>
+        
         {/* <form action=""></form> */}
         <form className="login-form" onSubmit={submitLogin}>
-          <div className="form-item incorrect">
-            <label htmlFor="email-input">
-              <span className="icon icon-send"></span>
-            </label>
-            <input
-              required
-              type="email"
-              id="email-input"
-              name="email"
-              placeholder="E-Mail Adress"
-            />
+
+          <div className={`form-item ${fieldErrors.email? 'incorrect' : ''}`}>
+            <div className="input-wrapper">
+              <label htmlFor="email-input">
+                <span className="icon icon-send"></span>
+              </label>
+              <input
+                required
+                type="email"
+                id="email-input"
+                name="email"
+                placeholder="E-Mail Adress"
+                onChange={handleLoginInputChange}
+                onBlur={handleBlur}
+              />
+            </div>
+            {fieldErrors.email && <div className="error">{fieldErrors.email}</div>}
           </div>
 
-          <div className="form-item incorrect">
+          <div className={`form-item ${fieldErrors.password ? 'incorrect' : ''}`}>
+            <div className="input-wrapper">
             <label htmlFor="password-input">
               <span className="icon icon-lock"></span>
             </label>
             <input
               required
-              type="password"
+              // type="password"
+              type={(showPassword === true)? "text": "password"}
               id="password-input"
               name="password"
               placeholder="Password"
+              onChange={handleLoginInputChange}
+              onBlur={handleBlur}
             />
-            <div className="password-eye">
+             <div className="password-eye">
+              {showPassword ? (
+                <span className="icon icon-visibility" onClick={handleShowPassword} />
+              ) : (
+                <span className="icon icon-visibility_off" onClick={handleShowPassword} />
+              )}
+            </div>
+            {/* <div className="password-eye">
               {showPassword === true ? (
                 <span
                   className="icon icon-visibility"
@@ -136,7 +189,9 @@ function LoginForm() {
                   onClick={handleShowPassword}
                 />
               )}
+            </div> */}
             </div>
+            {fieldErrors.password && <div className="error">{fieldErrors.password}</div>}
           </div>
 
           <button type="submit">Login</button>
