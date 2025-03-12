@@ -1,8 +1,8 @@
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
+import "./App.css";
 import Home from "./pages/Home/Home";
 import Registration from "./pages/Registration/Registration";
 import LoginForm from "./pages/Login/LoginForm";
-import "./App.css";
 import Sunsets from "./pages/Sunsets/Sunsets";
 import Profile from "./pages/Profile/Profile";
 import Footer from "./components/Footer/Footer";
@@ -10,6 +10,8 @@ import { MenuProvider } from "./context/MenuContext";
 import NavBar from "./components/Navbar/Navbar";
 import { useEffect } from "react";
 import { AuthContextProvider } from "./context/AuthorizationContext";
+import Add from "./pages/Add/Add";
+import ErrorPage from "./pages/Error Page/ErrorPage";
 //import ProtectedRoute from "./components/ProtectedRoute";
 
 const Root = () => {
@@ -45,21 +47,23 @@ function App() {
                 <Route index element={<Home />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/registration" element={<Registration />} />
-                <Route path="/login" element={<LoginForm/>}/>
+                <Route path="/login" element={<LoginForm />} />
                 <Route path="/sunsets" element={<Sunsets />} />
+                <Route path="/add" element={<Add />} />
                 <Route path="/profile" element={<Profile />} />
+
                 {/* <Route path="/profile" element={
                   <ProtectedRoute>
                       <Profile/>
                   </ProtectedRoute>
                   }/> */}
-                
+
                 {/* <Route path="/faq" element={<FAQ/>}/> */}
+                <Route path="*" element={<ErrorPage />} />
               </Route>
             </Routes>
           </BrowserRouter>
         </MenuProvider>
-
       </AuthContextProvider>
     </>
   );
