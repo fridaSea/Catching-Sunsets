@@ -1,18 +1,19 @@
 @font-face {
-  font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?ivmkf1');
-  src:  url('fonts/icomoon.eot?ivmkf1#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?ivmkf1') format('truetype'),
-    url('fonts/icomoon.woff?ivmkf1') format('woff'),
-    url('fonts/icomoon.svg?ivmkf1#icomoon') format('svg');
+  font-family: "icomoon";
+  src: url("fonts/icomoon.eot?82vhou");
+  src: url("fonts/icomoon.eot?82vhou#iefix") format("embedded-opentype"),
+    url("fonts/icomoon.ttf?82vhou") format("truetype"),
+    url("fonts/icomoon.woff?82vhou") format("woff"),
+    url("fonts/icomoon.svg?82vhou#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
   font-display: block;
 }
 
-[class^="icon-"], [class*=" icon-"] {
+[class^="icon-"],
+[class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'icomoon' !important;
+  font-family: "icomoon" !important;
   speak: never;
   font-style: normal;
   font-weight: normal;
@@ -25,11 +26,83 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-camera:before {
+  content: "\e908";
+}
+.icon-photo:before {
+  content: "\e908";
+}
+.icon-picture:before {
+  content: "\e908";
+}
+.icon-image:before {
+  content: "\e908";
+}
+.icon-picture2:before {
+  content: "\e90e";
+}
+.icon-image5:before {
+  content: "\e90e";
+}
+.icon-photo3:before {
+  content: "\e90e";
+}
+.icon-camera1:before {
+  content: "\e90f";
+}
+.icon-photo2:before {
+  content: "\e90f";
+}
+.icon-image2:before {
+  content: "\e90f";
+}
+.icon-camera3:before {
+  content: "\e910";
+}
+.icon-pictures:before {
+  content: "\e910";
+}
+.icon-photos1:before {
+  content: "\e910";
+}
+.icon-images1:before {
+  content: "\e910";
+}
+.icon-pictures1:before {
+  content: "\e911";
+}
+.icon-images2:before {
+  content: "\e911";
+}
+.icon-photos2:before {
+  content: "\e911";
+}
+.icon-polaroid:before {
+  content: "\e911";
+}
+.icon-add:before {
+  content: "\e912";
+}
+.icon-plus:before {
+  content: "\e912";
+}
+.icon-cloud-add:before {
+  content: "\e913";
+}
 .icon-mail-envelope-closed:before {
   content: "\e90a";
 }
-.icon-email1:before {
-  content: "\e909";
+.icon-camera-outline:before {
+  content: "\e914";
+}
+.icon-image_search:before {
+  content: "\e915";
+}
+.icon-add_photo_alternate:before {
+  content: "\e916";
+}
+.icon-add_a_photo:before {
+  content: "\e917";
 }
 .icon-mail_outline:before {
   content: "\e90d";
@@ -42,6 +115,15 @@
 }
 .icon-visibility:before {
   content: "\e905";
+}
+.icon-image4:before {
+  content: "\e918";
+}
+.icon-camera5:before {
+  content: "\e919";
+}
+.icon-plus-square:before {
+  content: "\e91a";
 }
 .icon-send:before {
   content: "\e90b";
@@ -61,11 +143,29 @@
 .icon-home:before {
   content: "\e901";
 }
-.icon-tiktok:before {
-  content: "\e900";
+.icon-image1:before {
+  content: "\e91b";
 }
-.icon-IconSunset:before {
-  content: "\e903";
+.icon-photo1:before {
+  content: "\e91b";
+}
+.icon-picture-o:before {
+  content: "\e91b";
+}
+.icon-picture1:before {
+  content: "\e91c";
+}
+.icon-photos:before {
+  content: "\e91c";
+}
+.icon-images:before {
+  content: "\e91c";
+}
+.icon-image6:before {
+  content: "\e91d";
+}
+.icon-camera6:before {
+  content: "\e91e";
 }
 .icon-facebook2:before {
   content: "\ea91";
@@ -75,4 +175,22 @@
 }
 .icon-youtube:before {
   content: "\ea9d";
+}
+.icon-camera2:before {
+  content: "\e91f";
+}
+.icon-image3:before {
+  content: "\e920";
+}
+.icon-camera4:before {
+  content: "\e921";
+}
+.icon-email1:before {
+  content: "\e909";
+}
+.icon-tiktok:before {
+  content: "\e900";
+}
+.icon-IconSunset:before {
+  content: "\e903";
 }
