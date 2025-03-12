@@ -29,26 +29,26 @@ const NavBar = () => {
       <div className={"navbar-links" + (isMenuOpen ? " " + "active" : "")}>
         <NavLink
           to="/sunsets"
-          className="nav-link"
+          className={({isActive}) => isActive ? 'nav-link active-link' : 'nav-link'}
           onClick={() => setIsMenuOpen(false)}
         >
           Sunsets
         </NavLink>
 
         <NavLink
-          to="/registration"
-          className="nav-link"
+          to="/login"
+          className={({isActive}) => isActive ? 'nav-link active-link' : 'nav-link'}
           onClick={() => setIsMenuOpen(false)}
         >
-          Registration
+          Login
         </NavLink>
 
         <NavLink
           to="/profile"
-          className="nav-link"
+          className={({isActive}) => isActive ? 'nav-link active-link' : 'nav-link'}
           onClick={() => setIsMenuOpen(false)}
         >
-          Profilesss
+          Profile
         </NavLink>
       </div>
     </nav>
