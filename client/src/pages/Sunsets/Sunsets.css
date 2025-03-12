@@ -1,0 +1,49 @@
+.sunset {
+  .icon {
+    color: #5fe9e0;
+  }
+
+  .icon-camera6 {
+    color: white;
+  }
+
+  .button {
+    margin-top: 10px;
+    border: none;
+    border-radius: 50px;
+    padding: 0.45em 2em;
+    background-color: #5fe9e0;
+    color: black;
+    font: inherit;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 150ms ease;
+  }
+
+  button:hover {
+    background-color: #c7fdfa;
+  }
+
+  /* button:focus {
+    outline: none;
+    background-color: #c7fdfa;
+  } */
+
+  input {
+    box-sizing: border-box;
+    flex-grow: 1;
+    min-width: 0;
+    height: 50px;
+    padding: 0.05em;
+    margin: 0.25em;
+    font: inherit;
+    border-radius: 0 10px 10px 0;
+    /* border: none; */
+    /* border-left: none; */
+    /* border: 2px solid #c7fdfa; */
+    background-color: #c7fdfa;
+    transition: 150ms ease;
+    color: rgb(0, 0, 0);
+  }
+}

@@ -11,6 +11,9 @@ const sunsetsRouter = express.Router();
 sunsetsRouter.get("/all", getAllSunsets);
 sunsetsRouter.get("/all/country/:location", getSunsetsByLocation);
 
+//TODO implement createSunsetPost which saves an imageURL with meta data (like title, description) into the database
+//sunsetsRouter.post("/", createSunsetPost);
+
 // sunsetsRouter.get("/all", (request, response) => {
 //   console.log("I am triggering a test route".bgBlue);
 //   response.json("This is a test route.");
