@@ -9,6 +9,8 @@ import sunsetsRouter from "./routes/sunsetsRoute.js";
 import userRouter from "./routes/usersRoute.js";
 import passport from "passport";
 import passportStrategy from "./config/passportConfig.js";
+import cloudinaryConfig from "./config/cloudinaryConfig.js";
+import imageRouter from "./routes/imageRoute.js";
 
 const app = express();
 
@@ -25,6 +27,7 @@ function addMiddleWares() {
   );
   app.use(cors());
   // console.log("process.env.MONGODB_URI :>> ".yellow, process.env.MONGODB_URI);
+  cloudinaryConfig();
   passport.initialize();
   passport.use(passportStrategy);
 }
@@ -38,6 +41,7 @@ function startServer() {
 
 function loadRoutes() {
   app.use("/api/", testRouter);
+  app.use("/api/image", imageRouter);
   app.use("/api/sunsets", sunsetsRouter);
   app.use("/api/users", userRouter);
 }

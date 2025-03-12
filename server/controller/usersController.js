@@ -1,4 +1,5 @@
 import UserModel from "../models/usersModel.js";
+import uploadToCloudinary from "../utilities/imageUpload.js";
 import {
   hashingPassword,
   verifyPassword,
@@ -61,6 +62,38 @@ const registerNewUser = async (req, res) => {
           });
         }
       }
+    }
+  } catch (error) {
+    return res.status(500).json({
+      error: "Something went wrong during registration",
+      // errorStack: error,
+      message: error.message,
+    });
+  }
+};
+
+const updateUser = async (req, res) => {
+  const { id, imgUrl } = req.body;
+  // const {id, username} = req.body;
+
+  // Check if user exist in database
+  try {
+    const existingUser = await UserModel.findById(id);
+
+    console.log("IMG URL", req.body);
+
+    if (existingUser) {
+      existingUser.img = imgUrl;
+      await existingUser.save();
+
+      return res.status(200).json({
+        message: "User updated successfully",
+        user: existingUser,
+      });
+    } else {
+      return res.status(404).json({
+        message: "User not found",
+      });
     }
   } catch (error) {
     return res.status(500).json({
@@ -149,4 +182,40 @@ const getProfile = async (req, res) => {
   }
 };
 
-export { registerNewUser, loginNewUser, getProfile };
+// TODO Move to imageController.ts
+const imageUpload = async (req, res) => {
+  console.log("Image upload is working");
+  console.log("req :>> ", req);
+
+  // ist hier nicht sehr genau das error handling
+  if (!req.file) {
+    return res.status(500).json({
+      error: "File Type not supported",
+    });
+  }
+  if (req.file) {
+    //we could check the file size here (or do it diretly in Multer)
+    // TO Do - calculate how much  size: 49983 in Bytes,  is in  megabytes and then you decide how many Megabytes you want to allow to upload
+    // 5 Megabytes
+
+    //Upload it to Cloudinary
+    const uploadedImage = await uploadToCloudinary(req.file);
+
+    if (!uploadedImage) {
+      return res.status(400).json({
+        error: "Image couldn`t be uploaded",
+      });
+    }
+
+    if (uploadedImage) {
+      return res.status(200).json({
+        message: "Image uploaded successfully",
+        imgUrl: uploadedImage.secure_url,
+      });
+    }
+
+    console.log("uploadedImage :>> ".green, uploadedImage);
+  }
+};
+
+export { registerNewUser, loginNewUser, getProfile, imageUpload, updateUser };
