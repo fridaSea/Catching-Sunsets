@@ -73,17 +73,18 @@ const registerNewUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { id, imgUrl } = req.body;
   // const {id, username} = req.body;
 
   // Check if user exist in database
   try {
-    const existingUser = await UserModel.findById(id);
+    const existingUser = await UserModel.findById(req.body.id);
 
     console.log("IMG URL", req.body);
 
     if (existingUser) {
-      existingUser.img = imgUrl;
+      existingUser.img = req.body.imgUrl;
+      existingUser.username = req.body.username;
+      //console.log("existingUser.img :>> ", existingUser.img);
       await existingUser.save();
 
       return res.status(200).json({

@@ -44,7 +44,13 @@ function Profile() {
       );
 
       const result = (await response.json()) as ImageUploadOkResponse;
-      const userUpdate = { ...loggedUser!, img: result.imgUrl };
+      const userUpdate = {
+        ...loggedUser!,
+        img: result.imgUrl,
+        username: result.username,
+        //new
+      };
+
       await updateProfileApi(userUpdate);
       updateUser(userUpdate);
 
@@ -61,43 +67,45 @@ function Profile() {
 
   const handleUsernameChange = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-    const formdata = new FormData();
-    formdata.append("username", newUsername);
 
-    if (newUsername && newUsername !== loggedUser?.username) {
-      const userUpdate = { ...loggedUser, username: newUsername };
-    }
+    const formdata = new FormData(e.target as HTMLFormElement);
+    const userNameUpdate: string =
+      (formdata.get("newUsername") as string) || loggedUser?.username;
 
-    const requestOptions = {
-      method: "PUT",
-      body: formdata,
-      headers: { Authorization: `Bearer ${token}` },
-    };
+    await updateProfileApi({
+      id: loggedUser.id,
+      img: loggedUser.img,
+      email: loggedUser.email,
+      username: userNameUpdate,
+    });
 
-    try {
-      const response = await fetch(
-        `${baseUrl}/api/users/profile`,
-        requestOptions
-      );
+    updateUser({
+      ...loggedUser,
+      username: userNameUpdate,
+    });
+  };
 
-      if (response.ok) {
-        const updateUser = await response.json();
-        updateUser(updatedUser);
-        console.log("User sucessfully updated :>> ", updatedUser);
-      } else {
-        console.log("Error while updating the name of the user");
-      }
-      // const result = (await response.json()) as UpdateOkResponse;
-      // console.log("loggedUser :>> ", loggedUser);
+  // CHANGE Email
+  const [newEmail, setNewEmail] = useState<string>(loggedUser?.password || "");
 
-      // await updateProfileApi(userUpdate);
-      // updateUser(userUpdate);
+  const handleEmailChange = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-      // console.log("result :>> ", result, loggedUser);
-    } catch (error) {
-      console.log("error :>> ", error);
-    }
+    const formdata = new FormData(e.target as HTMLFormElement);
+    const emailUpdate: string =
+      (formdata.get("newEmail") as string) || loggedUser?.email;
+
+    await updateProfileApi({
+      id: loggedUser.id,
+      img: loggedUser.img,
+      username: loggedUser.username,
+      email: emailUpdate,
+    });
+
+    updateUser({
+      ...loggedUser,
+      email: emailUpdate,
+    });
   };
 
   return (
@@ -156,13 +164,33 @@ function Profile() {
                 <form onSubmit={handleUsernameChange}>
                   <input
                     type="text"
-                    // name="image"
+                    name="newUsername"
                     id="newUsername"
                     // accept="image/*"
-                    onChange={handleAttachFile}
+                    defaultValue={loggedUser.username}
+                    //onChange={handleAttachFile}
                   />
                   <br />
-                  <button>Change Username</button>
+                  <button type="submit">Change Username</button>
+                </form>
+              </div>
+            </div>
+
+            {/* Change EMAIL */}
+            <div>
+              <p>Change your Password</p>
+              <div>
+                <form onSubmit={handleEmailChange}>
+                  <input
+                    type="text"
+                    name="newEmail"
+                    id="newEmail"
+                    // accept="image/*"
+                    defaultValue={loggedUser.email}
+                    //onChange={handleAttachFile}
+                  />
+                  <br />
+                  <button type="submit">Change Email</button>
                 </form>
               </div>
             </div>

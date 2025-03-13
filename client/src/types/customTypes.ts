@@ -6,6 +6,13 @@ export type User = {
   img: string;
 };
 
+export type UpdateUser = {
+  id: string;
+  username: string;
+  img: string;
+  email: string;
+};
+
 export type UserRegisterForm = {
   username: string;
   email: string;
@@ -38,6 +45,8 @@ export type GetProfileOkResponse = {
 export type ImageUploadOkResponse = {
   message: string;
   imgUrl: string;
+  username: string;
+  //new
 };
 
 export type NewPost = {

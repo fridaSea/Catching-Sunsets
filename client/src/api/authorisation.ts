@@ -1,4 +1,4 @@
-import { GetProfileOkResponse, User } from "../types/customTypes";
+import { GetProfileOkResponse, UpdateUser, User } from "../types/customTypes";
 import { baseUrl } from "../utilities/urls";
 
 export async function getUserProfileApi(): Promise<User> {
@@ -27,7 +27,7 @@ export async function getUserProfileApi(): Promise<User> {
   return result.user;
 }
 
-export async function updateProfileApi(user: User): Promise<void> {
+export async function updateProfileApi(user: UpdateUser): Promise<void> {
   const token = localStorage.getItem("token");
 
   if (!token) {
