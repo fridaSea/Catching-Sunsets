@@ -46,4 +46,17 @@
     transition: 150ms ease;
     color: rgb(0, 0, 0);
   }
+
+  .card {
+    max-width: 345;
+    width: 25vh;
+    height: 35vh;
+  }
+
+  @media (max-width: 490px) {
+    card-container {
+      margin-left: 50px;
+      /* Image is removed on smartphones */
+    }
+  }
 }

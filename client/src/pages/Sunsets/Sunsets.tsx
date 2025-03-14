@@ -1,63 +1,47 @@
-import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import { MenuContext } from "../../context/MenuContext";
 import { baseUrl } from "../../utilities/urls";
 import useFetch from "../../hooks/useFetch";
 import { ImageUploadOkResponse } from "../../types/customTypes";
 import { updateProfileApi } from "../../api/authorisation";
 import { AuthContext } from "../../context/AuthorizationContext";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import "./Sunsets.css";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Grid,
+  Grid2,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 function Sunsets() {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
-  const { loggedUser, updateUser } = useContext(AuthContext);
-  // Image Upload
 
-  const [selectedFile, setSelectedFile] = useState<File | string>("");
-  const handleAttachFile = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("e.target :>> ", e);
-    const file = e.target.files?.[0];
-    if (file instanceof File) {
-      console.log("Selected File set");
-      setSelectedFile(file);
-    }
-  };
+  // Zustand für gespeicherte Daten
+  // const SunsetURL: string = `${baseUrl}/api/sunsets/all`;
+  const [sunsets, setSunsets] = useState<any[]>([]); // anpassen, je nach Struktur der API-Daten
+  const [error, setError] = useState<string | null>(null);
 
-  // Upload New Post
-  // const [textContent, setTextContent] = useState<string>("");
+  const [data, setData] = useState<T | null>(null);
 
-  const handleImageUpload = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("selectedFile :>> ", selectedFile);
-    // Code from Postman for the Image Upload
-    const formdata = new FormData();
-    formdata.append("image", selectedFile);
-    // formdata.append("description", textContent);
-    // formdata.append("country", textContent);
+  //useFetch(`${baseUrl}/api/sunsets/all`);
 
-    const requestOptions = {
-      method: "POST",
-      body: formdata,
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`${baseUrl}/api/sunsets/all`);
+      const result = (await response.json()) as T;
+      console.log("result:>>", result);
+      setData(result);
+      console.log("data :>> ", data);
     };
-
-    try {
-      const response = await fetch(
-        // `${baseUrl}/api/users/uploadImage`,
-        `${baseUrl}/api/image/upload`,
-        requestOptions
-      );
-
-      const result = (await response.json()) as ImageUploadOkResponse;
-      const sunsetUpdate =
-        // const userUpdate = { ...loggedUser!, img: result.imgUrl };
-        // await updateProfileApi(userUpdate);
-        // updateUser(userUpdate);
-
-        console.log("result :>> ", result, loggedUser);
-    } catch (error) {
-      console.log("error :>> ", error);
-    }
-  };
+    fetchData();
+  }, []);
 
   return (
     <div
@@ -69,10 +53,61 @@ function Sunsets() {
         <h1>List of Sunsets</h1>
         <p>sunset pictures and places</p>
       </div>
+
+      {/* DISPLAYING CARDS */}
+      <Grid2 container spacing={2}>
+        {data && data.allSunsets && data.allSunsets.length > 0 ? (
+          data.allSunsets.map((sunset, index: number) => (
+            <Grid2
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              key={sunset._id}
+              className="card-container"
+            >
+              <Card className="card">
+                {/* Card Media for image */}
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={sunset.img || "defaultImage.jpg"} // Fallback image if sunset.img is empty
+                  alt={`Sunset in ${sunset.country}`}
+                />
+
+                {/* Card Content */}
+                <CardContent>
+                  <Typography variant="body2" color="text.secondary">
+                    {sunset.description}
+                  </Typography>
+                  <Typography gutterBottom variant="body2" component="div">
+                    {sunset.country}
+                  </Typography>
+                </CardContent>
+
+                {/* Card Actions */}
+                <CardActions>
+                  <IconButton aria-label="add to favorites">
+                    <FavoriteIcon />
+                  </IconButton>
+                  <Button size="small">
+                    <Link to={`/api/sunsets/${sunset._id}`} key={index}>
+                      Learn More
+                    </Link>
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid2>
+          ))
+        ) : (
+          <p>No sunsets available</p>
+        )}
+      </Grid2>
+
       <br />
       <div>
         <h3>Post a new picture</h3>
-        <div>
+        {/* <div>
           <form onSubmit={handleImageUpload}>
             <label>Choose your Image:</label>
             <input
@@ -108,7 +143,7 @@ function Sunsets() {
               Post
             </button>
           </form>
-        </div>
+        </div> */}
         {/* <div>
           <img
             src={loggedUser.img ? loggedUser.img : null}
