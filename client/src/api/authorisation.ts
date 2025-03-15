@@ -89,7 +89,7 @@ export async function updateProfileApi(user: UpdateUser): Promise<void> {
 }
 
 // ???Sollte man eher die UserID hier mit reingeben?
-export async function deleteProfileApi(user: UpdateUser): Promise<void> {
+export async function deleteProfileApi(userId: string): Promise<void> {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -100,10 +100,7 @@ export async function deleteProfileApi(user: UpdateUser): Promise<void> {
   myHeaders.append("Authorization", `Bearer ${token}`);
 
   const urlencoded = new URLSearchParams();
-  urlencoded.append("id", user.id);
-  // urlencoded.append("imgUrl", user.img);
-  // urlencoded.append("username", user.username);
-  // urlencoded.append("email", user.email);
+  urlencoded.append("id", userId);
 
   const requestOptions = {
     method: "DELETE",
