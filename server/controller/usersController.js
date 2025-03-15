@@ -1,3 +1,4 @@
+import { MongooseError } from "mongoose";
 import UserModel from "../models/usersModel.js";
 import uploadToCloudinary from "../utilities/imageUpload.js";
 import {
@@ -5,6 +6,7 @@ import {
   verifyPassword,
 } from "../utilities/passwordServices.js";
 import { generateToken } from "../utilities/tokenServices.js";
+import { request } from "express";
 
 const registerNewUser = async (req, res) => {
   const { email, password, username, img } = req.body;
@@ -84,7 +86,18 @@ const updateUser = async (req, res) => {
     if (existingUser) {
       existingUser.img = req.body.imgUrl;
       existingUser.username = req.body.username;
-      //console.log("existingUser.img :>> ", existingUser.img);
+      existingUser.email = req.body.email;
+
+      const userAlreadyExist = await UserModel.findOne({
+        email: req.body.email,
+      });
+      if (userAlreadyExist && userAlreadyExist.id !== existingUser.id) {
+        return res.status(400).json({
+          message: "The email address is already in use by another user",
+          user: existingUser,
+        });
+      }
+
       await existingUser.save();
 
       return res.status(200).json({
@@ -99,6 +112,32 @@ const updateUser = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       error: "Something went wrong during registration",
+      // errorStack: error,
+      message: error.message,
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  // Check if user exist in database
+  try {
+    const existingUser = await UserModel.findById(req.body.id);
+
+    if (existingUser) {
+      await UserModel.findByIdAndDelete(req.body.id);
+
+      return res.status(200).json({
+        message: "User deleted successfully",
+        // user: existingUser,
+      });
+    } else {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      error: "Something went wrong during deleting the user",
       // errorStack: error,
       message: error.message,
     });
@@ -219,4 +258,11 @@ const imageUpload = async (req, res) => {
   }
 };
 
-export { registerNewUser, loginNewUser, getProfile, imageUpload, updateUser };
+export {
+  registerNewUser,
+  loginNewUser,
+  getProfile,
+  imageUpload,
+  updateUser,
+  deleteUser,
+};
