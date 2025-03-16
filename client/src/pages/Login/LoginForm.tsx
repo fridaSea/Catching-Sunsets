@@ -1,121 +1,72 @@
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import "./LoginForm.css";
-import {
-  LoginCredentials,
-  LoginOkResponse,
-  User,
-} from "../../types/customTypes";
-import { baseUrl } from "../../utilities/urls";
+import { LoginCredentials, User } from "../../types/customTypes";
 import { MenuContext } from "../../context/MenuContext";
+import { loginUserApi } from "../../api/authorisation";
 
 function LoginForm() {
   const { isMenuOpen } = useContext(MenuContext);
 
-   // Visibility of the password
-   const [showPassword, setShowPassword] = useState(false);
-   const handleShowPassword = () => {
-     setShowPassword(!showPassword);
-   };
+  // Visibility of the password
+  const [showPassword, setShowPassword] = useState(false);
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
-   const [user, setUser] = useState<User | null>(null);
-   
-  //  const [loginCredentials, setLoginCredentials] =
-  //   useState<LoginCredentials | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loginError, setLoginError] = useState<Error | null>(null);
+
   const [loginCredentials, setLoginCredentials] = useState<LoginCredentials>({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   // User (below) should be in the Auth Context TO DO
   const [fieldErrors, setFieldErrors] = useState({
-    email: '', 
-    password: '',
+    email: "",
+    password: "",
   });
- 
 
- const handleLoginInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-  setLoginCredentials({
-    ...loginCredentials!,
-    [e.target.name]: e.target.value,
-  });
-}
+  const handleLoginInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLoginCredentials({
+      ...loginCredentials!,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const validateField = (name: string, value: string) => {
-    if (name === "email"){
-      if(!/.{6,}/.test(value)){
-        return "Your E-Mail Adress must at least has 6 characters."
-      } else if(!/.*@.*/.test(value)){
-        return "This is not a valid email adress"
+    if (name === "email") {
+      if (!/.{6,}/.test(value)) {
+        return "Your E-Mail Adress must at least has 6 characters.";
+      } else if (!/.*@.*/.test(value)) {
+        return "This is not a valid email adress";
       }
     }
-    if (name === "password" && value.length < 6){
-      return "Your password should have at least 6 characters"
+    if (name === "password" && value.length < 6) {
+      return "Your password should have at least 6 characters";
     }
-    return '';
-  }
+    return "";
+  };
 
   const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const errorMessage = validateField(name, value);
-    // const update  = {
-    //   email: fieldErrors.email, 
-    //   password: fieldErrors.password,
-    // }
-    // update[name] = errorMessage;
-    setFieldErrors({...fieldErrors, [name]: errorMessage});
-  }
+
+    setFieldErrors({ ...fieldErrors, [name]: errorMessage });
+  };
 
   const submitLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // console.log('loginCredentials :>> ', loginCredentials);
-
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-    const urlencoded = new URLSearchParams();
-    // TO DO - Do not forget to do Input validation (user has to be proper email, username lenght, if there, password should contain at least xy characters/ letters, numbers and symbols )
-    if (loginCredentials) {
-      urlencoded.append("email", loginCredentials.email);
-      urlencoded.append("password", loginCredentials.password);
-    } else {
-      console.log("no empty forms allowed");
-    }
-    // TO DO - if the required fields are not fulfilled, then a message and register with Register Button should not be possible
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: urlencoded,
-    };
 
     try {
-      const response = await fetch(
-        `${baseUrl}/api/users/login`,
-        requestOptions
+      const loggedInUser = await loginUserApi(
+        loginCredentials.email,
+        loginCredentials.password
       );
-      const result = (await response.json()) as LoginOkResponse;
-      console.log("result :>> ", result);
-
-      alert(result.message);
-      if (!result.token) {
-        // TO DO - do something about it
-      }
-      // if token is there, we gonna store it in the local storage of the browser
-      if (result.token) {
-        localStorage.setItem("token", result.token);
-      }
-      setUser(result.user);
-
-      // if(response.status < 400){
-      //   // console.log(result.message)
-      //   alert(result.message);
-      // } else {
-      //   // ERROR MESSAGE - Coming from the Backend
-      //   console.log(result.message);
-      //   setError(result.message)
-      // }
+      setUser(loggedInUser);
     } catch (error) {
       console.log("error :>> ", error);
+      setLoginError(error);
     }
   };
   // TO DO - Login sucessfull - Redirect to some Page
@@ -133,11 +84,9 @@ function LoginForm() {
     >
       <div className="wrapper">
         <h1>Login</h1>
-        
-        {/* <form action=""></form> */}
-        <form className="login-form" onSubmit={submitLogin}>
 
-          <div className={`form-item ${fieldErrors.email? 'incorrect' : ''}`}>
+        <form className="login-form" onSubmit={submitLogin}>
+          <div className={`form-item ${fieldErrors.email ? "incorrect" : ""}`}>
             <div className="input-wrapper">
               <label htmlFor="email-input">
                 <span className="icon icon-send"></span>
@@ -152,49 +101,50 @@ function LoginForm() {
                 onBlur={handleBlur}
               />
             </div>
-            {fieldErrors.email && <div className="error">{fieldErrors.email}</div>}
+            {fieldErrors.email && (
+              <div className="error">{fieldErrors.email}</div>
+            )}
           </div>
 
-          <div className={`form-item ${fieldErrors.password ? 'incorrect' : ''}`}>
+          <div
+            className={`form-item ${fieldErrors.password ? "incorrect" : ""}`}
+          >
             <div className="input-wrapper">
-            <label htmlFor="password-input">
-              <span className="icon icon-lock"></span>
-            </label>
-            <input
-              required
-              // type="password"
-              type={(showPassword === true)? "text": "password"}
-              id="password-input"
-              name="password"
-              placeholder="Password"
-              onChange={handleLoginInputChange}
-              onBlur={handleBlur}
-            />
-             <div className="password-eye">
-              {showPassword ? (
-                <span className="icon icon-visibility" onClick={handleShowPassword} />
-              ) : (
-                <span className="icon icon-visibility_off" onClick={handleShowPassword} />
-              )}
+              <label htmlFor="password-input">
+                <span className="icon icon-lock"></span>
+              </label>
+              <input
+                required
+                type={showPassword === true ? "text" : "password"}
+                id="password-input"
+                name="password"
+                placeholder="Password"
+                onChange={handleLoginInputChange}
+                onBlur={handleBlur}
+              />
+              <div className="password-eye">
+                {showPassword ? (
+                  <span
+                    className="icon icon-visibility"
+                    onClick={handleShowPassword}
+                  />
+                ) : (
+                  <span
+                    className="icon icon-visibility_off"
+                    onClick={handleShowPassword}
+                  />
+                )}
+              </div>
             </div>
-            {/* <div className="password-eye">
-              {showPassword === true ? (
-                <span
-                  className="icon icon-visibility"
-                  onClick={handleShowPassword}
-                />
-              ) : (
-                <span
-                  className="icon icon-visibility_off"
-                  onClick={handleShowPassword}
-                />
-              )}
-            </div> */}
-            </div>
-            {fieldErrors.password && <div className="error">{fieldErrors.password}</div>}
+            {fieldErrors.password && (
+              <div className="error">{fieldErrors.password}</div>
+            )}
           </div>
 
           <button type="submit">Login</button>
+          {loginError?.message && (
+            <div className="error">{loginError.message}</div>
+          )}
         </form>
         <p>
           Don`t have an account? Register
