@@ -9,8 +9,9 @@ import Footer from "./components/Footer/Footer";
 import { MenuProvider } from "./context/MenuContext";
 import NavBar from "./components/Navbar/Navbar";
 import { AuthContextProvider } from "./context/AuthorizationContext";
-import Add from "./pages/Add/Add";
 import ErrorPage from "./pages/Error Page/ErrorPage";
+import AddSunset from "./pages/AddSunset/AddSunset";
+import DetailSunset from "./pages/DetailSunset/DetailSunset";
 //import ProtectedRoute from "./components/ProtectedRoute";
 
 const Root = () => {
@@ -48,7 +49,9 @@ function App() {
                 <Route path="/registration" element={<Registration />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/sunsets" element={<Sunsets />} />
-                <Route path="/add" element={<Add />} />
+                <Route path="/sunsets/add" element={<AddSunset />} />
+                {/* <Route path="/sunsets/:id" element={<UpdateSunset />} /> */}
+                <Route path="/sunsets/:id" element={<DetailSunset />} />
                 <Route path="/profile" element={<Profile />} />
 
                 {/* <Route path="/profile" element={
