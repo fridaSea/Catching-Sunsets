@@ -1,24 +1,31 @@
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { MenuContext } from "../../context/MenuContext";
 import { createSunsetApi } from "../../api/sunset";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import "./AddSunset.css";
 import { baseUrl } from "../../utilities/urls";
 import { SunsetImageUploadOkResponse } from "../../types/customTypes";
 import { uploadNewImageApi } from "../../api/image";
+import { AuthContext } from "../../context/AuthorizationContext";
 
 function AddSunset() {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
+  const { loggedUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [selectedFile, setSelectedFile] = useState<File>(null);
   const [newSunset, setNewSunset] = useState<{
     img: string;
     country: string;
     description: string;
+    ownerUserId: string;
+    id: string;
   }>({
     img: "",
     country: "",
     description: "",
+    ownerUserId: "",
+    id: "",
   });
 
   const handleAttachFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -34,15 +41,30 @@ function AddSunset() {
     e.preventDefault();
 
     // Bild wird hochgeladen
-    const result = await uploadNewImageApi(selectedFile);
-
-    await createSunsetApi({
-      country: newSunset.country,
-      description: newSunset.description,
-      imgUrl: result.imgUrl,
-    });
-
-    console.log("result/ Sunset upload sueccessfully :>> ", newSunset);
+    const uploadedSunsetImage = await uploadNewImageApi(selectedFile);
+    if (!uploadedSunsetImage.imgUrl) {
+      console.log("img couldn't be uploaded");
+    }
+    if (uploadedSunsetImage.imgUrl) {
+      setNewSunset({ ...newSunset, img: uploadedSunsetImage.imgUrl });
+      const uploadedSunset = await createSunsetApi({
+        country: newSunset.country,
+        description: newSunset.description,
+        img: uploadedSunsetImage.imgUrl,
+        ownerUserId: loggedUser.id,
+        id: newSunset.id,
+      });
+      if (uploadedSunset.message === "New Sunset Post added successfully") {
+        navigate("/sunsets");
+        console.log("result/ Sunset upload sueccessfully :>> ", uploadedSunset);
+      }
+      if (uploadedSunset.message !== "New Sunset Post added successfully") {
+        alert("couldn't upload the sunset");
+      }
+      // navigate("/sunsets");
+    }
+    // console.log("result before submitting sunset :>> ", result);
+    console.log("uploadedSunsetImage :>> ", uploadedSunsetImage);
   };
 
   // New Sunset Image
@@ -122,6 +144,7 @@ function AddSunset() {
           />
           <br />
           <button>Save</button>
+          {/* TO DO - If Sunset upload sucessfully -> redirect to Detais or Listing Page */}
         </form>
       </div>
       <div>

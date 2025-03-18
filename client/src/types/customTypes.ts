@@ -49,18 +49,39 @@ export type ImageUploadOkResponse = {
   //new
 };
 
-export type NewPost = {
+export type SunsetImageUploadOkResponse = {
+  message: string;
+  imgUrl: string;
+  country: string;
+  description: string;
+  //new
+};
+
+export type NewSunsetOkResponse = {
+  message: string;
+  post: NewSunsetPopulated;
+};
+
+export type NewSunset = {
+  id: string;
+  img: string;
+  country: string;
+  description: string;
+  ownerUserId: string;
+};
+type NewSunsetPopulated = Omit<NewSunset, "ownerUserId">;
+export type UpdatedSunset = {
+  id: string;
   imgUrl: string;
   country: string;
   description: string;
 };
+// muss noch angepasst werden
+export type GetSunsetOkResponse = {
+  message: string;
+  user: User;
+};
 
 export type UpdateOkResponse = {
   username: string;
-};
-
-// muss noch angepasst werden
-export type GetGalleryOkResponse = {
-  message: string;
-  user: User;
 };

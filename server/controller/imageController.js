@@ -2,7 +2,7 @@ import uploadToCloudinary from "../utilities/imageUpload";
 
 const imageUpload = async (req, res) => {
   console.log("Image upload is working");
-  console.log("req :>> ", req);
+  // console.log("req :>> ", req);
 
   // ist hier nicht sehr genau das error handling
   if (!req.file) {
