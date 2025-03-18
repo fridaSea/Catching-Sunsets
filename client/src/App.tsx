@@ -12,6 +12,7 @@ import { AuthContextProvider } from "./context/AuthorizationContext";
 import ErrorPage from "./pages/Error Page/ErrorPage";
 import AddSunset from "./pages/AddSunset/AddSunset";
 import DetailSunset from "./pages/DetailSunset/DetailSunset";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 //import ProtectedRoute from "./components/ProtectedRoute";
 
 const Root = () => {
@@ -52,13 +53,16 @@ function App() {
                 <Route path="/sunsets/add" element={<AddSunset />} />
                 {/* <Route path="/sunsets/:id" element={<UpdateSunset />} /> */}
                 <Route path="/sunsets/:id" element={<DetailSunset />} />
-                <Route path="/profile" element={<Profile />} />
+                {/* <Route path="/profile" element={<Profile />} /> */}
 
-                {/* <Route path="/profile" element={
-                  <ProtectedRoute>
-                      <Profile/>
-                  </ProtectedRoute>
-                  }/> */}
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
 
                 {/* <Route path="/faq" element={<FAQ/>}/> */}
                 <Route path="*" element={<ErrorPage />} />
