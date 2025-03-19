@@ -10,8 +10,12 @@ const getAllSunsets = async (req, res) => {
 
   try {
     // const allSunsets = []; // to fake that the lenght is egal to 0
-    const allSunsets = await SunsetModel.find({});
-    console.log("allSunsets :>> ", allSunsets);
+    //const allSunsets = await SunsetModel.find().populate("ownerUserId");
+    const allSunsets = await SunsetModel.find().populate({
+      path: "ownerUserId",
+      select: ["username", "email"],
+    });
+    //console.log("allSunsets :>> ", allSunsets);
 
     if (allSunsets.length === 0) {
       res.status(200).json({
@@ -111,4 +115,223 @@ const getSunsetsByLocation = async (req, res) => {
   }
 };
 
-export { getAllSunsets, getSunsetsByLocation };
+const getSunsetById = async (req, res) => {
+  const { id } = req.params;
+  //console.log("req.params :>> ", req.params);
+  try {
+    const existingSunset = await SunsetModel.findById(id);
+    if (!existingSunset) {
+      return res.status(404).json({
+        message: "No sunset found",
+      });
+    }
+    if (existingSunset) {
+      return res.status(200).json({
+        message: "Sunset Post",
+        sunset: {
+          id: existingSunset._id,
+          country: existingSunset.country,
+          description: existingSunset.description,
+          img: existingSunset.img,
+          ownerUserId: existingSunset.ownerUserId,
+        },
+      });
+    }
+  } catch (error) {
+    console.log("error :>> ", error);
+    return res.status(500).json({
+      error: "Something went wrong during Sunset Abfrage",
+      errorMessage: error.message,
+    });
+  }
+};
+
+const addNewSunset = async (req, res) => {
+  const { imgUrl, description, country, ownerUserId } = req.body;
+  console.log("req.body :>> ", req.body);
+  const { username, email } = req.user;
+  console.log("req.user :>> ", req.user);
+
+  //NEW
+  // if (!ownerUserId) {
+  //   return res.status(400).json({
+  //     error: "Owner User ID is required",
+  //   });
+  // }
+
+  //NEW 19.03 // Validate the ObjectId format for ownerUserId
+  // if (!mongoose.Types.ObjectId.isValid(ownerUserId)) {
+  //   return res.status(400).json({ error: "Invalid User ID format" });
+  // }
+
+  if (!imgUrl) {
+    return res.status(400).json({
+      error: "Image is required",
+    });
+  }
+
+  try {
+    const newSunsetObject = new SunsetModel({
+      img: imgUrl,
+      country: country,
+      description: description,
+      ownerUserId: ownerUserId,
+    });
+    console.log("newSunsetModel :>> ", newSunsetObject);
+
+    const newSunset = await newSunsetObject.save();
+    console.log("newSunset :>> ", newSunset);
+    if (!newSunset) {
+      return res.status(500).json({
+        error: "New Sunset Post could not be saved",
+      });
+    }
+    if (newSunset) {
+      return res.status(201).json({
+        message: "New Sunset Post added successfully",
+        post: {
+          id: newSunset._id,
+          country: newSunset.country,
+          description: newSunset.description,
+          sunsetOwner: { username, email },
+          img: imgUrl,
+        },
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      error: "Something went wrong while uploading a new post",
+      message: error.message,
+    });
+  }
+};
+
+const updateSunsetById = async (req, res) => {
+  const { id } = req.params;
+  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  //   return res.status(400).json({
+  //     error: "Invalid ObjectId format",
+  //   });
+  // }
+  // Check if the image post exist in the database
+  try {
+    const existingSunset = await SunsetModel.findById(id);
+    console.log("existingSunset :>> ", existingSunset);
+    if (!existingSunset) {
+      return res.status(404).json({
+        message: "No sunset found",
+      });
+    }
+    console.log("req.body :>> ", req.body);
+    if (existingSunset) {
+      existingSunset.country = req.body.country;
+      existingSunset.description = req.body.description;
+      // es funktioniert hier nur mit req.body.imgUrl; / mit req.body.img funktioniert es nicht
+      existingSunset.img = req.body.imgUrl;
+      existingSunset.ownerUserId = req.body.ownerUserId;
+      //existingSunset.img = req.file.path;
+      // existingSunset.imgURL = existingSunset.imgUrl;
+
+      await existingSunset.save();
+      console.log("existingSunset :>> ", existingSunset);
+
+      return res.status(200).json({
+        message: "Sunset Post updated successfully",
+        sunset: existingSunset,
+      });
+    } else {
+      return res.status(404).json({
+        message: "Sunset Post not found",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      error: "Something went wrong during updating Sunset Post",
+      // errorStack: error,
+      message: error.message,
+    });
+  }
+};
+
+const deleteSunsetById = async (req, res) => {
+  try {
+    const existingSunset = await SunsetModel.findById(req.body.id);
+    if (existingSunset) {
+      await SunsetModel.findByIdAndDelete(req.body.id);
+      return res.status(200).json({
+        message: "Sunset Post deleted successfully",
+      });
+    } else {
+      return res.status(404).json({
+        message: "Sunset Post not found",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      error: "Something went wrong during deleting the Sunset Post",
+      // errorStack: error,
+      message: error.message,
+    });
+  }
+};
+
+//NEW 19.03
+const getUserSunsets = async (req, res) => {
+  // console.log("getUserSunsets controller function running");
+  // console.log("params :>> ", req.params);
+  // console.log("query :>> ", req.query);
+  // const { userId } = req.user;
+
+  // // Überprüfen, ob der userId ein gültiger ObjectId ist
+  // if (!mongoose.Types.ObjectId.isValid(userId)) {
+  //   return res.status(400).json({ error: "Ungültige userId" });
+  // }
+  // try {
+  //   // Alle Sunsets des eingeloggten Benutzers anhand der userId abrufen
+  //   const sunsets = await SunsetModel.find({
+  //     owner: mongoose.Types.ObjectId(userId),
+  //   }); // `owner` ist der Referenzwert des Benutzers im Sunset-Model
+  //   res.json(sunsets); // Die Sunsets als JSON zurückgeben
+  // } catch (error) {
+  //   res.status(500).json({ message: "Fehler beim Abrufen der Sunset-Posts" });
+  // }
+  const { userId } = req.user; // Benutzer-ID aus dem JWT
+
+  try {
+    // Überprüfe, ob userId eine gültige ObjectId ist
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Ungültige userId" });
+    }
+    // Hole das User-Dokument und extrahiere die geposteten Sunsets (Array von ObjectId)
+    const user = await UserModel.findById(userId).select("postedSunsets"); // Nur das postedSunsets-Feld abfragen
+    if (!user) {
+      return res.status(404).json({ message: "Benutzer nicht gefunden" });
+    }
+
+    const sunsetIds = user.postedSunsets; // Array der Sunset-ObjectIds
+
+    // Hole die Sunsets anhand der IDs
+    const sunsets = await SunsetModel.find({ _id: { $in: sunsetIds } });
+
+    if (sunsets.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Keine geposteten Sunsets gefunden" });
+    }
+
+    res.json(sunsets); // Erfolgreiches Zurückgeben der Daten
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Sunsets:", error);
+    res.status(500).json({ message: "Fehler beim Abrufen der Sunset-Posts" });
+  }
+};
+
+export {
+  getAllSunsets,
+  getSunsetsByLocation,
+  addNewSunset,
+  getSunsetById,
+  updateSunsetById,
+  deleteSunsetById,
+  getUserSunsets,
+};

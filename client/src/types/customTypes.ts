@@ -67,8 +67,13 @@ export type NewSunset = {
   img: string;
   country: string;
   description: string;
+  //NEW 19.03
+  // sunsetOwner: string;
   ownerUserId: string;
 };
+
+//NEW 19.03
+// type NewSunsetPopulated = Omit<NewSunset, "sunsetOwner">;
 type NewSunsetPopulated = Omit<NewSunset, "ownerUserId">;
 export type UpdatedSunset = {
   id: string;

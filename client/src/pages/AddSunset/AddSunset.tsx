@@ -7,11 +7,18 @@ import { baseUrl } from "../../utilities/urls";
 import { SunsetImageUploadOkResponse } from "../../types/customTypes";
 import { uploadNewImageApi } from "../../api/image";
 import { AuthContext } from "../../context/AuthorizationContext";
+import { Alert, Snackbar } from "@mui/material";
 
 function AddSunset() {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
   const { loggedUser } = useContext(AuthContext);
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar
   const navigate = useNavigate();
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
 
   const [selectedFile, setSelectedFile] = useState<File>(null);
   const [newSunset, setNewSunset] = useState<{
@@ -29,10 +36,10 @@ function AddSunset() {
   });
 
   const handleAttachFile = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("e.target :>> ", e);
+    //console.log("e.target :>> ", e);
     const file = e.target.files?.[0];
     if (file instanceof File) {
-      console.log("Selected File set");
+      //console.log("Selected File set");
       setSelectedFile(file);
     }
   };
@@ -40,29 +47,57 @@ function AddSunset() {
   const submitNewSunset = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!selectedFile) {
+      setSnackbarMessage("Please select an image!");
+      setOpenSnackbar(true);
+      return;
+    }
+
     // Bild wird hochgeladen
     const uploadedSunsetImage = await uploadNewImageApi(selectedFile);
     if (!uploadedSunsetImage.imgUrl) {
-      console.log("img couldn't be uploaded");
+      //console.log("img couldn't be uploaded");
+      setSnackbarMessage("Image upload failed!");
+      setOpenSnackbar(true);
+      return;
     }
-    if (uploadedSunsetImage.imgUrl) {
-      setNewSunset({ ...newSunset, img: uploadedSunsetImage.imgUrl });
+    setNewSunset({ ...newSunset, img: uploadedSunsetImage.imgUrl });
+
+    try {
       const uploadedSunset = await createSunsetApi({
         country: newSunset.country,
         description: newSunset.description,
         img: uploadedSunsetImage.imgUrl,
+        // ownerUserId: loggedUser.id,
+        //NEW 19.03
+        //sunsetOwner: loggedUser.id,
         ownerUserId: loggedUser.id,
         id: newSunset.id,
       });
+      // if (uploadedSunsetImage.imgUrl) {
+
       if (uploadedSunset.message === "New Sunset Post added successfully") {
-        navigate("/sunsets");
-        console.log("result/ Sunset upload sueccessfully :>> ", uploadedSunset);
+        setSnackbarMessage("Sunset posted successfully!");
+        setOpenSnackbar(true);
+        setTimeout(() => {
+          navigate("/sunsets"); // Nach erfolgreichem Upload weiter zur Sunset-Liste
+        }, 2000);
+        //     navigate("/sunsets");
+        //     console.log("result/ Sunset upload sueccessfully :>> ", uploadedSunset);
+        //   }
+        //   if (uploadedSunset.message !== "New Sunset Post added successfully") {
+        //     alert("couldn't upload the sunset");
+        //   }
+        //   // navigate("/sunsets");
+      } else {
+        setSnackbarMessage("Couldn't upload the sunset!");
+        setOpenSnackbar(true);
       }
-      if (uploadedSunset.message !== "New Sunset Post added successfully") {
-        alert("couldn't upload the sunset");
-      }
-      // navigate("/sunsets");
+    } catch (error) {
+      setSnackbarMessage("Error posting sunset!");
+      setOpenSnackbar(true);
     }
+
     // console.log("result before submitting sunset :>> ", result);
     console.log("uploadedSunsetImage :>> ", uploadedSunsetImage);
   };
@@ -71,7 +106,7 @@ function AddSunset() {
 
   const handleNewSunsetInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNewSunset({ ...newSunset!, [e.target.name]: e.target.value });
-    console.log("e.target :>> ", e.target.name, e.target.id, newSunset);
+    //console.log("e.target :>> ", e.target.name, e.target.id, newSunset);
   };
 
   // Update Post
@@ -152,6 +187,17 @@ function AddSunset() {
           <button className="button">Back to the Sunset Magic</button>
         </NavLink>
       </div>
+      {/* Snackbar für Bestätigungsmeldungen */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000} // Dauer für die Anzeige der Snackbar
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity="success">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

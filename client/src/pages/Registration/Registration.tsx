@@ -8,10 +8,20 @@ import {
 } from "../../types/customTypes";
 import { baseUrl } from "../../utilities/urls";
 import { MenuContext } from "../../context/MenuContext";
+import { useNavigate } from "react-router";
+import { Alert, Snackbar } from "@mui/material";
 // import RegistrationSunset from '../../../public/RegistrationSunset.jpeg'
 
 function Registration() {
   const { isMenuOpen } = useContext(MenuContext);
+
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar
+  const navigate = useNavigate();
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
 
   //new User
   const [newUser, setNewUser] = useState<UserRegisterForm | null>(null);
@@ -108,8 +118,16 @@ function Registration() {
 
       if (response.status < 400) {
         // console.log(result.message)
-        alert(result.message);
+        //alert(result.message);
         setUser(result.user);
+        // Erfolgreiche Registrierung
+        setSnackbarMessage("Registration was successful!");
+        setOpenSnackbar(true);
+
+        // Warte, bis die Snackbar geschlossen ist, bevor weitergeleitet wird
+        setTimeout(() => {
+          navigate("/profile");
+        }, 2500); // Warten, bis die Snackbar vollständig angezeigt wird
       } else {
         // ERROR MESSAGE - Coming from the Backend
         console.log(result.message);
@@ -117,6 +135,13 @@ function Registration() {
       }
     } catch (error) {
       console.log("error :>> ", error);
+      setSnackbarMessage("Failed to register!");
+      setOpenSnackbar(true);
+
+      // Fehlerbehandlung, auch hier könntest du die Navigation verzögern
+      setTimeout(() => {
+        navigate("/sunsets");
+      }, 2500);
     }
   };
 
@@ -304,7 +329,17 @@ function Registration() {
           </p>
         </div>
       </div>
-
+      {/* Snackbar für Bestätigungsmeldungen */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000} // Dauer für die Anzeige der Snackbar
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity="success">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       {/* <div>
       <img className="background-image" src={RegistrationSunset} alt="Sunsetpicture on Registrationpage" />
     </div> */}

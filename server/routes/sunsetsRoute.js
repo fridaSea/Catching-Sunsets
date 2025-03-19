@@ -1,9 +1,12 @@
 import express from "express";
 import {
   addNewSunset,
+  deleteSunsetById,
   getAllSunsets,
   getSunsetById,
   getSunsetsByLocation,
+  getUserSunsets,
+  updateSunsetById,
 } from "../controller/sunsetsController.js";
 import jwtAuth from "../middelware/jwtAuth.js";
 
@@ -15,8 +18,9 @@ sunsetsRouter.get("/all", getAllSunsets);
 sunsetsRouter.get("/all/country/:location", getSunsetsByLocation);
 sunsetsRouter.post("/add", jwtAuth, addNewSunset);
 sunsetsRouter.get("/:id", getSunsetById);
-// sunsetsRouter.put("/:id", jwtAuth, updateSunsetById);
-// sunsetsRouter.delete("/:id", jwtAuth, deleteSunsetById);
+sunsetsRouter.put("/:id", jwtAuth, updateSunsetById);
+sunsetsRouter.delete("/:id", jwtAuth, deleteSunsetById);
+sunsetsRouter.get("/mine", jwtAuth, getUserSunsets);
 
 // userRouter.post("/register", registerNewUser);
 
