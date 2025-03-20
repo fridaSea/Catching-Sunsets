@@ -17,10 +17,10 @@ const sunsetsRouter = express.Router();
 sunsetsRouter.get("/all", getAllSunsets);
 sunsetsRouter.get("/all/country/:location", getSunsetsByLocation);
 sunsetsRouter.post("/add", jwtAuth, addNewSunset);
+sunsetsRouter.get("/mine", jwtAuth, getUserSunsets);
 sunsetsRouter.get("/:id", getSunsetById);
 sunsetsRouter.put("/:id", jwtAuth, updateSunsetById);
 sunsetsRouter.delete("/:id", jwtAuth, deleteSunsetById);
-sunsetsRouter.get("/mine", jwtAuth, getUserSunsets);
 
 // userRouter.post("/register", registerNewUser);
 

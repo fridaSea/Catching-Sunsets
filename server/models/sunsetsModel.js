@@ -15,22 +15,27 @@ const sunsetSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    likes: {
-      type: Number,
+    ownerUserId: {
       required: false,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    location: {
-      type: String,
-      required: false,
-    },
-    recorded: {
-      type: Date,
-      required: false,
-    },
-    senses: {
-      type: String,
-      required: false,
-    },
+    // likes: {
+    //   type: Number,
+    //   required: false,
+    // },
+    // location: {
+    //   type: String,
+    //   required: false,
+    // },
+    // recorded: {
+    //   type: Date,
+    //   required: false,
+    // },
+    // senses: {
+    //   type: String,
+    //   required: false,
+    // },
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_At" } }
 );

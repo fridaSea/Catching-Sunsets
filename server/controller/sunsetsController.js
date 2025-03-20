@@ -13,7 +13,7 @@ const getAllSunsets = async (req, res) => {
     //const allSunsets = await SunsetModel.find().populate("ownerUserId");
     const allSunsets = await SunsetModel.find().populate({
       path: "ownerUserId",
-      select: ["username", "email"],
+      select: ["_id", "username", "email"],
     });
     //console.log("allSunsets :>> ", allSunsets);
 
@@ -147,22 +147,10 @@ const getSunsetById = async (req, res) => {
 };
 
 const addNewSunset = async (req, res) => {
-  const { imgUrl, description, country, ownerUserId } = req.body;
+  const { imgUrl, description, country } = req.body;
   console.log("req.body :>> ", req.body);
   const { username, email } = req.user;
   console.log("req.user :>> ", req.user);
-
-  //NEW
-  // if (!ownerUserId) {
-  //   return res.status(400).json({
-  //     error: "Owner User ID is required",
-  //   });
-  // }
-
-  //NEW 19.03 // Validate the ObjectId format for ownerUserId
-  // if (!mongoose.Types.ObjectId.isValid(ownerUserId)) {
-  //   return res.status(400).json({ error: "Invalid User ID format" });
-  // }
 
   if (!imgUrl) {
     return res.status(400).json({
@@ -175,7 +163,7 @@ const addNewSunset = async (req, res) => {
       img: imgUrl,
       country: country,
       description: description,
-      ownerUserId: ownerUserId,
+      ownerUserId: req.user._id,
     });
     console.log("newSunsetModel :>> ", newSunsetObject);
 
@@ -208,11 +196,6 @@ const addNewSunset = async (req, res) => {
 
 const updateSunsetById = async (req, res) => {
   const { id } = req.params;
-  // if (!mongoose.Types.ObjectId.isValid(id)) {
-  //   return res.status(400).json({
-  //     error: "Invalid ObjectId format",
-  //   });
-  // }
   // Check if the image post exist in the database
   try {
     const existingSunset = await SunsetModel.findById(id);
@@ -275,55 +258,32 @@ const deleteSunsetById = async (req, res) => {
   }
 };
 
-//NEW 19.03
 const getUserSunsets = async (req, res) => {
-  // console.log("getUserSunsets controller function running");
-  // console.log("params :>> ", req.params);
-  // console.log("query :>> ", req.query);
-  // const { userId } = req.user;
+  console.log("getUserSunsets controller function running");
+  console.log("params :>> ", req.params);
+  console.log("query :>> ", req.query);
 
-  // // Überprüfen, ob der userId ein gültiger ObjectId ist
-  // if (!mongoose.Types.ObjectId.isValid(userId)) {
-  //   return res.status(400).json({ error: "Ungültige userId" });
-  // }
-  // try {
-  //   // Alle Sunsets des eingeloggten Benutzers anhand der userId abrufen
-  //   const sunsets = await SunsetModel.find({
-  //     owner: mongoose.Types.ObjectId(userId),
-  //   }); // `owner` ist der Referenzwert des Benutzers im Sunset-Model
-  //   res.json(sunsets); // Die Sunsets als JSON zurückgeben
-  // } catch (error) {
-  //   res.status(500).json({ message: "Fehler beim Abrufen der Sunset-Posts" });
-  // }
-  const { userId } = req.user; // Benutzer-ID aus dem JWT
+  const userId = req.user._id;
 
-  try {
-    // Überprüfe, ob userId eine gültige ObjectId ist
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: "Ungültige userId" });
-    }
-    // Hole das User-Dokument und extrahiere die geposteten Sunsets (Array von ObjectId)
-    const user = await UserModel.findById(userId).select("postedSunsets"); // Nur das postedSunsets-Feld abfragen
-    if (!user) {
-      return res.status(404).json({ message: "Benutzer nicht gefunden" });
-    }
+  console.log(userId);
+  const sunsetsByUser = await SunsetModel.find({ ownerUserId: userId });
 
-    const sunsetIds = user.postedSunsets; // Array der Sunset-ObjectIds
+  if (sunsetsByUser.length === 0) {
+    let errorMessage = "No sunsets found. ";
 
-    // Hole die Sunsets anhand der IDs
-    const sunsets = await SunsetModel.find({ _id: { $in: sunsetIds } });
-
-    if (sunsets.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "Keine geposteten Sunsets gefunden" });
-    }
-
-    res.json(sunsets); // Erfolgreiches Zurückgeben der Daten
-  } catch (error) {
-    console.error("Fehler beim Abrufen der Sunsets:", error);
-    res.status(500).json({ message: "Fehler beim Abrufen der Sunset-Posts" });
+    res.status(400).json({
+      message: errorMessage,
+      amount: sunsetsByUser.length,
+      // sunsetsByLocationAndLikes,
+    });
+    return;
   }
+  res.status(200).json({
+    message: `Sunsets from ${req.params.ownerUserId}`,
+    sunsetsByUser,
+  });
+
+  return;
 };
 
 export {
