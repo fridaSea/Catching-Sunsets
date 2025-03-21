@@ -1,17 +1,50 @@
 import { MenuContext } from "../../context/MenuContext";
-import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthorizationContext";
 import { baseUrl } from "../../utilities/urls";
 import {
   ImageUploadOkResponse,
+  NewSunset,
   UpdateOkResponse,
   UpdateUser,
 } from "../../types/customTypes";
-import { deleteProfileApi, updateProfileApi } from "../../api/authorisation";
+import {
+  deleteProfileApi,
+  getUserSunsetsApi,
+  updateProfileApi,
+} from "../../api/authorisation";
+import { useNavigate } from "react-router";
+import { Alert, Card, CardMedia, Snackbar } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 
 function Profile() {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
-  const { loggedUser, updateUser } = useContext(AuthContext);
+  const { loggedUser, getUserProfile, updateUser } = useContext(AuthContext);
+  // const [loading, setLoading] = useState(true);
+
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   // Wenn der Benutzer bereits eingeloggt ist, hole die Benutzerdaten
+  //   if (loggedUser) {
+  //     setLoading(false); // Keine Notwendigkeit, das Profil erneut zu laden, da es bereits vorhanden ist
+  //   } else {
+  //     // Wenn keine Benutzerdaten vorhanden sind, hole sie mit der Methode getUserProfile()
+  //     getUserProfile().finally(() => {
+  //       setLoading(false); // Lade die Benutzerdaten und stoppe das Laden
+  //     });
+  //   }
+  // }, [loggedUser, getUserProfile]); // Nur erneut ausführen, wenn loggedUser oder getUserProfile sich ändern
+
+  // if (loading) {
+  //   return <div>Loading...</div>; // Eine Ladeanzeige, während die Benutzerdaten abgerufen werden
+  // }
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
 
   const [loginError, setLoginError] = useState<Error | null>(null);
   //console.log('loggedUser :>> ', loggedUser);
@@ -145,8 +178,8 @@ function Profile() {
     // }
 
     // Debugging-Log
-    console.log("Logged User Email:", loggedUser?.email);
-    console.log("New Email Attempt:", emailUpdate);
+    // console.log("Logged User Email:", loggedUser?.email);
+    // console.log("New Email Attempt:", emailUpdate);
 
     const userNameUpdate: string =
       (formdata.get("newUsername") as string) || loggedUser?.username;
@@ -163,6 +196,17 @@ function Profile() {
       email: emailUpdate,
       username: userNameUpdate,
     });
+    try {
+      // Erfolgreiche Update-Bestätigung
+      setSnackbarMessage("Profil updated successfully!");
+      setOpenSnackbar(true);
+      setTimeout(() => {
+        navigate("/sunsets"); // Zur Liste der Sunsets navigieren
+      }, 1500); // Wartezeit für Snackbar
+    } catch (error) {
+      setSnackbarMessage("Failed to update Profile!");
+      setOpenSnackbar(true);
+    }
   };
 
   const handleUserDelete = async (e: MouseEvent) => {
@@ -170,7 +214,49 @@ function Profile() {
     // alert("Delete Button funtkioniert");
 
     deleteProfileApi(loggedUser.id);
+    try {
+      // Erfolgreiche Update-Bestätigung
+      setSnackbarMessage("Userprofil deleted successfully!");
+      setOpenSnackbar(true);
+      setTimeout(() => {
+        navigate("/sunsets"); // Zur Liste der Sunsets navigieren
+      }, 1500); // Wartezeit für Snackbar
+    } catch (error) {
+      setSnackbarMessage("Failed to delete Profile!");
+      setOpenSnackbar(true);
+    }
   };
+
+  // HOle die Sunsets des Users
+
+  const [sunsets, setSunsets] = useState<NewSunset[]>([]); // anpassen, je nach Struktur der API-Daten
+  //const [loading, setLoading] = useState<boolean>(true);
+
+  // useEffect(() => {
+  //   const fetchUserSunsets = async () => {
+
+  //     try {
+  //       const response = await getUserSunsetsApi(sunsetsByUser);
+  //       // console.log("result:>>", result);
+  //       // setSunsets(response .sunsetsByUser._id);
+  //       setSunsets(response.sunsetsByUser);
+  //       //console.log("data :>> ", data);
+  //     } catch (error) {
+  //       setError("Fehler beim Laden der Sunsets");
+  //     }
+  //   };
+  //   fetchUserSunsets();
+  // }, []);
+
+  // ?? KANN ICH NICHT VIELLEICHT DAS USER PROFILE NUTZEN; DENN DA SIND DIE POSTESSUNSETS JA SCHON VORHANDEN???
+  // TO DO - ERROR HANDLING ??
+  useEffect(() => {
+    const fetchUserSunsets = async () => {
+      const sunsets = await getUserSunsetsApi();
+      setSunsets(sunsets);
+    };
+    fetchUserSunsets();
+  }, []);
 
   return (
     <div
@@ -186,11 +272,7 @@ function Profile() {
       <div>
         {loggedUser && (
           <div>
-            <h2>Hi {loggedUser.username}</h2>
-            {/* <img 
-          src={loggedUser.img} 
-          alt="users profile pic" 
-          style={{width:"150px", height:"auto"}}/> */}
+            <h3>Hi {loggedUser.username}</h3>
 
             <div>
               <img
@@ -281,6 +363,42 @@ function Profile() {
             <button onClick={handleUserDelete}> Delete Account</button>
           </div>
         )}
+        <br />
+        <div>
+          <h2>Your own Sunsets</h2>
+        </div>
+
+        {/* DISPLAYING Users Sunsets */}
+
+        {sunsets && sunsets.length === 0 ? (
+          <p>Du hast noch keine Sunset-Fotos hochgeladen.</p>
+        ) : (
+          <div className="sunset-gallery">
+            {sunsets.map((sunset) => (
+              <div key={sunset.id} className="sunset-item">
+                <img
+                  src={sunset.img}
+                  // alt={sunset.title}
+                  alt={`Sunseg image of user ${loggedUser.username}`}
+                  style={{ width: "150px", height: "auto" }}
+                />
+                <h3>{sunset.country}</h3>
+                <p>{sunset.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        {/* Snackbar für Bestätigungsmeldungen */}
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={3000} // Dauer für die Anzeige der Snackbar
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleSnackbarClose} severity="success">
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </div>
     </div>
   );

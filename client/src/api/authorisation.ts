@@ -1,6 +1,7 @@
 import {
   GetProfileOkResponse,
   LoginOkResponse,
+  NewSunset,
   UpdateUser,
   User,
 } from "../types/customTypes";
@@ -88,7 +89,6 @@ export async function updateProfileApi(user: UpdateUser): Promise<void> {
   await fetch(`${baseUrl}/api/users/profile`, requestOptions);
 }
 
-// ???Sollte man eher die UserID hier mit reingeben?
 export async function deleteProfileApi(userId: string): Promise<void> {
   const token = localStorage.getItem("token");
 
@@ -109,4 +109,35 @@ export async function deleteProfileApi(userId: string): Promise<void> {
   };
 
   await fetch(`${baseUrl}/api/users/profile`, requestOptions);
+}
+
+export async function getUserSunsetsApi(): Promise<Array<NewSunset>> {
+  const token = localStorage.getItem("token");
+  // console.log("token :>> ", token);
+  console.log(localStorage.getItem("token"));
+
+  if (!token) {
+    throw new Error("No token found");
+  }
+
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  console.log("Token:", token);
+  console.log("Headers:", myHeaders);
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+  };
+
+  const response = await fetch(`${baseUrl}/api/sunsets/mine`, requestOptions);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user Sunset profile: ${response.status}`);
+    //console.error("something went wrong");
+  }
+  // if it is okay, we gonna transfer the response to a json
+  const result = await response.json();
+  return result.sunsetsByUser;
 }

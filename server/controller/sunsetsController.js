@@ -260,26 +260,20 @@ const deleteSunsetById = async (req, res) => {
 
 const getUserSunsets = async (req, res) => {
   console.log("getUserSunsets controller function running");
-  console.log("params :>> ", req.params);
-  console.log("query :>> ", req.query);
+  // console.log("params :>> ", req.params);
+  // console.log("query :>> ", req.query);
 
   const userId = req.user._id;
 
   console.log(userId);
   const sunsetsByUser = await SunsetModel.find({ ownerUserId: userId });
-
-  if (sunsetsByUser.length === 0) {
-    let errorMessage = "No sunsets found. ";
-
-    res.status(400).json({
-      message: errorMessage,
-      amount: sunsetsByUser.length,
-      // sunsetsByLocationAndLikes,
-    });
-    return;
-  }
+  // const sunsetsByUser = await SunsetModel.find.populate({
+  //   path: "ownerUserId",
+  //   select: ["_id", "username", "email", "postedSunsets"],
+  // });
   res.status(200).json({
-    message: `Sunsets from ${req.params.ownerUserId}`,
+    // message: `Sunsets from ${req.params.ownerUserId}`,
+    message: `Sunsets from ${req.user._id}`,
     sunsetsByUser,
   });
 
