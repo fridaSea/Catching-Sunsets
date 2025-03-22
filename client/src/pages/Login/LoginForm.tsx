@@ -3,9 +3,21 @@ import "./LoginForm.css";
 import { LoginCredentials, User } from "../../types/customTypes";
 import { MenuContext } from "../../context/MenuContext";
 import { loginUserApi } from "../../api/authorisation";
+import { useNavigate } from "react-router";
+import { Alert, Snackbar } from "@mui/material";
+import { AuthContext } from "../../context/AuthorizationContext";
 
 function LoginForm() {
   const { isMenuOpen } = useContext(MenuContext);
+  const authContext = useContext(AuthContext);
+
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar
+  const navigate = useNavigate();
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
 
   // Visibility of the password
   const [showPassword, setShowPassword] = useState(false);
@@ -15,6 +27,8 @@ function LoginForm() {
 
   const [user, setUser] = useState<User | null>(null);
   const [loginError, setLoginError] = useState<Error | null>(null);
+
+  const [loading, setLoading] = useState(null);
 
   const [loginCredentials, setLoginCredentials] = useState<LoginCredentials>({
     email: "",
@@ -26,6 +40,11 @@ function LoginForm() {
     email: "",
     password: "",
   });
+
+  // https://upmostly.com/tutorials/how-to-refresh-a-page-or-component-in-react
+  // function refreshPage() {
+  //   window.location.reload(false);
+  // }
 
   const handleLoginInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLoginCredentials({
@@ -59,14 +78,26 @@ function LoginForm() {
     e.preventDefault();
 
     try {
-      const loggedInUser = await loginUserApi(
+      await authContext.login(
         loginCredentials.email,
         loginCredentials.password
       );
-      setUser(loggedInUser);
+      // Redirect
+      // navigate("/profile");
+      // setTimeout(() => {
+      //   navigate("/profile"); // Zur Liste der Sunsets navigieren
+      // }, 2500); // Wartezeit für Snackbar
+      // Erfolgreiche Update-Bestätigung
+      setSnackbarMessage("Login was successfull!");
+      setOpenSnackbar(true);
+      setTimeout(() => {
+        navigate("/profile"); // Zur Liste der Sunsets navigieren
+      }, 2000); // Wartezeit für Snackbar
     } catch (error) {
       console.log("error :>> ", error);
       setLoginError(error);
+      setSnackbarMessage("Failed to login!");
+      setOpenSnackbar(true);
     }
   };
   // TO DO - Login sucessfull - Redirect to some Page
@@ -150,6 +181,20 @@ function LoginForm() {
           Don`t have an account? Register
           <a href="./registration"> here</a>.
         </p>
+        {/* Snackbar für Bestätigungsmeldungen */}
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={3000} // Dauer für die Anzeige der Snackbar
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={snackbarMessage.includes("Failed") ? "error" : "success"}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </div>
     </div>
   );

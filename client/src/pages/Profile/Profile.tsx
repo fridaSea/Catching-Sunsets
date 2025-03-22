@@ -13,34 +13,46 @@ import {
   getUserSunsetsApi,
   updateProfileApi,
 } from "../../api/authorisation";
-import { useNavigate } from "react-router";
-import { Alert, Card, CardMedia, Snackbar } from "@mui/material";
+import { NavLink, useNavigate } from "react-router";
+import {
+  Alert,
+  Card,
+  CardContent,
+  CardMedia,
+  Snackbar,
+  Typography,
+} from "@mui/material";
 import Grid from "@mui/material/Grid2";
+import "./Profile.css";
 
 function Profile() {
+  //   location.reload();
+  // return false;
+
+  // function refresh() {
+  //   setTimeout(function () {
+  //     location.reload();
+  //   }, 100);
+  // }
+  // refresh();
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
-  const { loggedUser, getUserProfile, updateUser } = useContext(AuthContext);
-  // const [loading, setLoading] = useState(true);
+  const { loggedUser, getUserProfile, updateUser, isAuthenticated } =
+    useContext(AuthContext);
+  //const [loading, setLoading] = useState(true);
 
   const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar
   const navigate = useNavigate();
 
+  // useEffect zum Laden der Benutzerdaten
   // useEffect(() => {
-  //   // Wenn der Benutzer bereits eingeloggt ist, hole die Benutzerdaten
-  //   if (loggedUser) {
-  //     setLoading(false); // Keine Notwendigkeit, das Profil erneut zu laden, da es bereits vorhanden ist
+  //   if (!loggedUser) {
+  //     // Lade Benutzerdaten, wenn sie nicht vorhanden sind
+  //     getUserProfile().finally(() => setLoading(false)); // Setzt loading auf false nach erfolgreichem Laden
   //   } else {
-  //     // Wenn keine Benutzerdaten vorhanden sind, hole sie mit der Methode getUserProfile()
-  //     getUserProfile().finally(() => {
-  //       setLoading(false); // Lade die Benutzerdaten und stoppe das Laden
-  //     });
+  //     setLoading(false); // Wenn loggedUser bereits existiert, setze loading auf false
   //   }
-  // }, [loggedUser, getUserProfile]); // Nur erneut ausführen, wenn loggedUser oder getUserProfile sich ändern
-
-  // if (loading) {
-  //   return <div>Loading...</div>; // Eine Ladeanzeige, während die Benutzerdaten abgerufen werden
-  // }
+  // }, [loggedUser, getUserProfile]);
 
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
@@ -49,6 +61,12 @@ function Profile() {
   const [loginError, setLoginError] = useState<Error | null>(null);
   //console.log('loggedUser :>> ', loggedUser);
   // console.log('result.user :>> ', result.user)
+
+  useEffect(() => {
+    if (loggedUser === null) {
+      getUserProfile();
+    }
+  }, [loggedUser, getUserProfile]);
 
   // IMAGE UPLOAD - KANN ICH DAS IN EINE CONTEXT PACKEN??
   const [selectedFile, setSelectedFile] = useState<File | string>("");
@@ -232,22 +250,6 @@ function Profile() {
   const [sunsets, setSunsets] = useState<NewSunset[]>([]); // anpassen, je nach Struktur der API-Daten
   //const [loading, setLoading] = useState<boolean>(true);
 
-  // useEffect(() => {
-  //   const fetchUserSunsets = async () => {
-
-  //     try {
-  //       const response = await getUserSunsetsApi(sunsetsByUser);
-  //       // console.log("result:>>", result);
-  //       // setSunsets(response .sunsetsByUser._id);
-  //       setSunsets(response.sunsetsByUser);
-  //       //console.log("data :>> ", data);
-  //     } catch (error) {
-  //       setError("Fehler beim Laden der Sunsets");
-  //     }
-  //   };
-  //   fetchUserSunsets();
-  // }, []);
-
   // ?? KANN ICH NICHT VIELLEICHT DAS USER PROFILE NUTZEN; DENN DA SIND DIE POSTESSUNSETS JA SCHON VORHANDEN???
   // TO DO - ERROR HANDLING ??
   useEffect(() => {
@@ -369,9 +371,42 @@ function Profile() {
         </div>
 
         {/* DISPLAYING Users Sunsets */}
+        {sunsets && sunsets.length > 0 ? (
+          <Grid container spacing={2}>
+            {sunsets.map((sunset) => (
+              <Grid
+                size={{ xs: 12, sm: 6, md: 3, lg: 2 }}
+                // size={{ xs: 12, sm: 6, md: 4}}
+                key={sunset.id}
+                className="card-container"
+              >
+                <NavLink
+                  to={`/sunsets/${sunset._id}`}
+                  // key={index}
+                >
+                  <Card className="card">
+                    {/* Card Media for image */}
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={sunset.img} //
+                      alt={`Sunset image of user with the username ${loggedUser.username}`}
+                    />
+                    {/* Card Content */}
+                    <CardContent>
+                      <Typography variant="body2">{sunset.country}</Typography>
+                    </CardContent>
+                  </Card>
+                </NavLink>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <p>You haven't uploaded any sunsets yet.</p>
+        )}
 
-        {sunsets && sunsets.length === 0 ? (
-          <p>Du hast noch keine Sunset-Fotos hochgeladen.</p>
+        {/* {sunsets && sunsets.length === 0 ? (
+          <p>You haven't uploaded any sunsets yet.</p>
         ) : (
           <div className="sunset-gallery">
             {sunsets.map((sunset) => (
@@ -387,7 +422,8 @@ function Profile() {
               </div>
             ))}
           </div>
-        )}
+        )} */}
+
         {/* Snackbar für Bestätigungsmeldungen */}
         <Snackbar
           open={openSnackbar}
@@ -395,7 +431,10 @@ function Profile() {
           onClose={handleSnackbarClose}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
-          <Alert onClose={handleSnackbarClose} severity="success">
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={snackbarMessage.includes("Failed") ? "error" : "success"}
+          >
             {snackbarMessage}
           </Alert>
         </Snackbar>

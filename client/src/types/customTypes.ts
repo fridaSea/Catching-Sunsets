@@ -6,6 +6,15 @@ export type User = {
   img: string;
 };
 
+// export type UserWithSunsets = {
+//   id: string;
+//   username: string;
+//   email: string;
+//   password: string;
+//   img: string;
+//   uploadedImages: string[];
+// };
+
 export type UpdateUser = {
   id: string;
   username: string;
@@ -37,9 +46,13 @@ export type LoginOkResponse = {
   token: string;
 };
 
+// export type GetProfileOkResponse = {
+//   message: string;
+//   user: User;
+// };
 export type GetProfileOkResponse = {
   message: string;
-  user: User;
+  user: UserWithSunsets;
 };
 
 export type ImageUploadOkResponse = {

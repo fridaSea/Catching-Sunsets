@@ -10,6 +10,7 @@ import { baseUrl } from "../../utilities/urls";
 import { MenuContext } from "../../context/MenuContext";
 import { useNavigate } from "react-router";
 import { Alert, Snackbar } from "@mui/material";
+import { AuthContext } from "../../context/AuthorizationContext";
 // import RegistrationSunset from '../../../public/RegistrationSunset.jpeg'
 
 function Registration() {
@@ -54,20 +55,20 @@ function Registration() {
 
   const validateField = (name: string, value: string) => {
     if (name === "username" && !/[A-Za-z0-9]{3,16}/.test(value)) {
-      return "Your Username can contain numbers and normal characters and should be 3-16 Characters long";
+      return "Your Username can contain numbers and normal characters and should be 3-16 characters long.";
     }
     if (name === "email") {
       if (!/.{6,}/.test(value)) {
-        return "Your E-Mail Adress must at least has 6 characters.";
+        return "Please enter a valid E-Mail Adress with at least 6 characters.";
       } else if (!/.*@.*/.test(value)) {
         return "This is not a valid email adress";
       }
     }
     if (name === "password" && value.length < 6) {
-      return "Your password should have at least 6 characters";
+      return "Your password needs to have at least 6 characters.";
     }
     if (name === "repeatedPassword" && newUser && newUser.password !== value) {
-      return "Passwords does not match";
+      return "The Passwords do not match.";
     }
     return "";
   };
@@ -85,6 +86,7 @@ function Registration() {
     setFieldErrors({ ...fieldErrors, [name]: errorMessage });
   };
 
+  const { login } = useContext(AuthContext);
   const submitRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("newUser :>> ", newUser);
@@ -117,12 +119,19 @@ function Registration() {
       const result = (await response.json()) as RegisterOkResponse;
 
       if (response.status < 400) {
-        // console.log(result.message)
-        //alert(result.message);
-        setUser(result.user);
+        // Erfolgreiche registrierung
+        //setUser(result.user);
         // Erfolgreiche Registrierung
         setSnackbarMessage("Registration was successful!");
         setOpenSnackbar(true);
+
+        // Benutzer nach erfolgreicher Registrierung automatisch einloggen
+        await login(newUser?.email!, newUser?.password!);
+
+        // Warte, bis die Snackbar geschlossen ist, bevor weitergeleitet wird
+        setTimeout(() => {
+          navigate("/profile");
+        }, 2500);
 
         // Warte, bis die Snackbar geschlossen ist, bevor weitergeleitet wird
         setTimeout(() => {
@@ -137,11 +146,6 @@ function Registration() {
       console.log("error :>> ", error);
       setSnackbarMessage("Failed to register!");
       setOpenSnackbar(true);
-
-      // Fehlerbehandlung, auch hier könntest du die Navigation verzögern
-      setTimeout(() => {
-        navigate("/sunsets");
-      }, 2500);
     }
   };
 
@@ -219,7 +223,6 @@ function Registration() {
                 </label>
                 <input
                   required
-                  // type="password"
                   type={showPassword === true ? "text" : "password"}
                   id="password-input"
                   name="password"
@@ -336,7 +339,10 @@ function Registration() {
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={handleSnackbarClose} severity="success">
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarMessage.includes("Failed") ? "error" : "success"}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
