@@ -65,52 +65,19 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
   const token = localStorage.getItem("token");
 
-  const [user, setUser] = useState<User | null>(null);
-
   const getUserProfile = async () => {
     return getUserProfileApi();
   };
 
-  const checkUserStatus = async (force = false) => {
+  const checkUserStatus = async () => {
     if (token) {
+      const userProfile = await getUserProfileApi();
+      setLoggedUser(userProfile);
       setIsAuthenticated(true);
-
-      if (!user || force) {
-        const myHeaders = new Headers();
-        myHeaders.append("Authorization", `Bearer ${token}`);
-
-        const requestOptions = {
-          method: "GET",
-          headers: myHeaders,
-        };
-
-        try {
-          const response = await fetch(
-            `${baseUrl}/api/users/profile`,
-            requestOptions
-          );
-          if (!response.ok) {
-            //console.log("Log in again, redirect user to login page");
-            return;
-          }
-
-          if (response.ok) {
-            const result = await response.json();
-            setLoggedUser(result.userProfile);
-            //console.log("result.userProfile :>> ", result.userProfile);
-          }
-        } catch (error) {
-          console.log("error :>> ", error);
-        }
-      }
     } else {
       setIsAuthenticated(false);
     }
   };
-
-  useEffect(() => {
-    checkUserStatus();
-  }, []);
 
   const registration = async (
     email: string,
@@ -149,16 +116,14 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         throw new Error(result.message);
       } else {
         localStorage.setItem("token", result.token);
-        setUser(result.user);
+        setLoggedUser(result.user);
         setIsAuthenticated(true);
       }
     } catch (error) {
       console.error("Error during registration:", error);
       throw error;
     }
-    useEffect(() => {
-      checkUserStatus();
-    }, []);
+    return checkUserStatus();
   };
 
   //Login & Logout functionality
@@ -179,14 +144,9 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    setUser(null);
     setIsAuthenticated(false);
     setLoggedUser(null);
   };
-
-  useEffect(() => {
-    checkUserStatus();
-  }, []);
 
   // UPDATE USER
   const updateUser = async (updatedUser: User) => {
@@ -219,6 +179,10 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     }
     return () => {};
   }, [loggedUser]);
+
+  useEffect(() => {
+    checkUserStatus();
+  }, []);
 
   return (
     <AuthContext.Provider

@@ -211,7 +211,7 @@ const updateSunsetById = async (req, res) => {
       existingSunset.description = req.body.description;
       // es funktioniert hier nur mit req.body.imgUrl; / mit req.body.img funktioniert es nicht
       existingSunset.img = req.body.imgUrl;
-      existingSunset.ownerUserId = req.body.ownerUserId;
+      existingSunset.ownerUserId = req.user._id;
       //existingSunset.img = req.file.path;
       // existingSunset.imgURL = existingSunset.imgUrl;
 
@@ -280,6 +280,14 @@ const getUserSunsets = async (req, res) => {
   return;
 };
 
+const likeSunsetById = async (req, res) => {
+  console.log("LIKE SUNSET");
+};
+
+const disLikeSunsetById = async (req, res) => {
+  console.log("DISLIKE SUNSET");
+};
+
 export {
   getAllSunsets,
   getSunsetsByLocation,
@@ -288,4 +296,6 @@ export {
   updateSunsetById,
   deleteSunsetById,
   getUserSunsets,
+  likeSunsetById,
+  disLikeSunsetById,
 };
