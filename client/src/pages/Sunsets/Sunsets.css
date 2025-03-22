@@ -47,10 +47,19 @@
     color: rgb(0, 0, 0);
   }
 
+  .card-container {
+  }
   .card {
+    margin: 0 auto;
     max-width: 345;
-    width: 25vh;
-    height: 35vh;
+    width: 100%;
+    height: auto;
+    border-color: rgb(255, 255, 254);
+    border-radius: 10px;
+    border-width: 0.1px;
+    border-style: solid;
+    color: white;
+    background-color: black;
   }
 
   @media (max-width: 490px) {
