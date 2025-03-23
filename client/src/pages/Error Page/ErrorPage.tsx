@@ -2,6 +2,7 @@ import { NavLink } from "react-router";
 import { MenuContext } from "../../context/MenuContext";
 import { useContext } from "react";
 import "./ErrorPage.css";
+import ErrorImage from "../../assets/ErrorImage.png";
 
 function ErrorPage() {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
@@ -16,12 +17,12 @@ function ErrorPage() {
         <h2>Sorry, page could not be found.</h2>
         {/* TODO eine Seite Foto von Sonnenuntergang/ Himmel - andere Seite Text  */}
         <br />
-        <p>!!!! TODO INSERT AN IMAGE HERE !!!!</p>
+        <img className="error-image" src={ErrorImage} alt="Sunset" />
         <br />
         <p>
           Have you looked up at the sky today?
           <br />
-          Watched the clouds? Enjoyed the bluesky?
+          Watched the clouds?
           <br />
           <br />
           Take a moment.

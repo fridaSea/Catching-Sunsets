@@ -5,7 +5,8 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-top: 20vh;
+    margin-top: 40px;
+    margin-bottom: 20px;
   }
   .button {
     margin-top: 30px;
@@ -28,5 +29,12 @@
   .button:focus {
     outline: none;
     background-color: #c7fdfa;
+  }
+  .error-image {
+    width: 50%;
+    max-width: 600px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
   }
 }
