@@ -146,7 +146,7 @@ const deleteUser = async (req, res) => {
 
 const loginNewUser = async (req, res) => {
   const { email, password } = req.body;
-
+  //REVIEW it would be great if you could add some imput validation to make sure email and passwords are just that (and not a script, or malitious code, for example), before making any query to the database.
   //1. Find user in database
   try {
     const existingUser = await UserModel.findOne({ email: req.body.email });

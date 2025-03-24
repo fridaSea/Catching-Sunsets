@@ -40,7 +40,7 @@ function startServer() {
 }
 
 function loadRoutes() {
-  app.use("/api/", testRouter);
+  app.use("/api/", testRouter); //REVIEW do not forget to get rid of the test route after the tests are done
   app.use("/api/image", imageRouter);
   app.use("/api/sunsets", sunsetsRouter);
   app.use("/api/users", userRouter);
