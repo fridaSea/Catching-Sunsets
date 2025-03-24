@@ -1,0 +1,45 @@
+.home {
+  .hero-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .hero-text h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .hero-text p {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .hero-image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Media Query für größere Bildschirme */
+  @media (min-width: 768px) {
+    .hero-container {
+      flex-direction: row;
+      text-align: left;
+    }
+
+    .hero-text {
+      flex: 1;
+      padding-right: 20px;
+    }
+
+    .hero-image {
+      flex: 1; /* Nimmt den verfügbaren Platz ein */
+      max-width: 60%;
+    }
+  }
+}
