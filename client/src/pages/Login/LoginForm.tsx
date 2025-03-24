@@ -24,7 +24,7 @@ function LoginForm() {
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
+  // REVIEW don't leave unsed variables behind
   const [user, setUser] = useState<User | null>(null);
   const [loginError, setLoginError] = useState<Error | null>(null);
 
@@ -53,6 +53,7 @@ function LoginForm() {
     });
   };
 
+  // REVIEW DRY principle. You use a very similar finction in Registration. Make it reusable
   const validateField = (name: string, value: string) => {
     if (name === "email") {
       if (!/.{6,}/.test(value)) {

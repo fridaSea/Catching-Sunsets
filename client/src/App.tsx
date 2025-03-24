@@ -44,6 +44,7 @@ function App() {
         <MenuProvider>
           <BrowserRouter>
             <Routes>
+              {/* //REVIEW the two routes for Home component are redundant */}
               <Route element={<Root />}>
                 <Route index element={<Home />} />
                 <Route path="/home" element={<Home />} />

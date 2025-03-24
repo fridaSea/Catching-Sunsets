@@ -12,6 +12,7 @@ import { Alert, Snackbar } from "@mui/material";
 function AddSunset() {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
   const { loggedUser } = useContext(AuthContext);
+  // REVIEW the variables and handler for the snackbar are repeated in several components. Maybe an snackbar context could've been useful?
   const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar
   const navigate = useNavigate();
