@@ -1,6 +1,6 @@
 import express from "express";
 import { imageUpload } from "../controller/usersController.js";
-import jwtAuth from "../middelware/jwtAuth.js";
+import jwtAuth from "../middelware/jwtAuth.js"; //REVIEW for the deployment, you'll have to get rid of unused imports and variables
 import multerUpload from "../middelware/multer.js";
 
 // 1. Create a router

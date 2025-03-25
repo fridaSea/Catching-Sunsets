@@ -17,9 +17,9 @@ const sunsetsRouter = express.Router();
 sunsetsRouter.get("/all", getAllSunsets);
 sunsetsRouter.get("/all/country/:location", getSunsetsByLocation);
 sunsetsRouter.post("/add", jwtAuth, addNewSunset);
-sunsetsRouter.get("/mine", jwtAuth, getUserSunsets);
+sunsetsRouter.get("/mine", jwtAuth, getUserSunsets); //REVIEW Naming is hard, that we know, but maybe there is a better name for that path, like "userSunset"
 sunsetsRouter.get("/:id", getSunsetById);
-sunsetsRouter.put("/:id", jwtAuth, updateSunsetById);
+sunsetsRouter.put("/:id", jwtAuth, updateSunsetById); //REVIEW PUT method is to replace the entire data. If you are updating some properties, PATH would be the indicated one.
 sunsetsRouter.delete("/:id", jwtAuth, deleteSunsetById);
 
 // userRouter.post("/register", registerNewUser);
