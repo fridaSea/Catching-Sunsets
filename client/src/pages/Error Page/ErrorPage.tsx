@@ -5,17 +5,16 @@ import "./ErrorPage.css";
 import ErrorImage from "../../assets/ErrorImage.png";
 
 function ErrorPage() {
-  const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
+  const { isMenuOpen } = useContext(MenuContext);
 
   return (
     <div
-      className={`errorpage sunset component-content-container ${
+      className={`error-page sunset component-content-container ${
         isMenuOpen ? "content-container-menu-open" : ""
       }`}
     >
       <div className="container">
         <h2>Sorry, page could not be found.</h2>
-        {/* TODO eine Seite Foto von Sonnenuntergang/ Himmel - andere Seite Text  */}
         <br />
         <img className="error-image" src={ErrorImage} alt="Sunset" />
         <br />

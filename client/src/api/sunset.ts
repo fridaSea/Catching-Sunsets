@@ -1,4 +1,3 @@
-import Sunsets from "../pages/Sunsets/Sunsets";
 import {
   NewSunset,
   NewSunsetOkResponse,
@@ -24,8 +23,6 @@ export async function createSunsetApi(
   urlencoded.append("description", newSunset.description);
   urlencoded.append("imgUrl", newSunset.img);
   urlencoded.append("ownerUserId", newSunset.ownerUserId);
-  //NEW 19.03
-  //urlencoded.append("ownerUserId", newSunset.sunsetOwner);
 
   const requestOptions = {
     method: "POST",
@@ -48,7 +45,7 @@ export async function createSunsetApi(
     console.log("error  creating sunset:>> ", error);
   }
 }
-//updateSunsetById
+
 export async function updateSunsetApi(sunset: UpdatedSunset) {
   const token = localStorage.getItem("token");
 
@@ -67,8 +64,6 @@ export async function updateSunsetApi(sunset: UpdatedSunset) {
     body: urlencoded,
   };
 
-  //await fetch(`${baseUrl}/api/sunsets/add`, requestOptions);
-  //NEW 19.03
   await fetch(`${baseUrl}/api/sunsets/${sunset.id}`, requestOptions);
 }
 
@@ -115,7 +110,5 @@ export async function deleteSunsetApi(sunsetId: string): Promise<void> {
     body: urlencoded,
   };
 
-  //await fetch(`${baseUrl}/api/sunsets/:id`, requestOptions);
-  //NEW 19.03
   await fetch(`${baseUrl}/api/sunsets/${sunsetId}`, requestOptions);
 }

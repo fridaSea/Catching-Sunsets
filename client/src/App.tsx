@@ -1,5 +1,5 @@
-import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 import "./App.css";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 import Home from "./pages/Home/Home";
 import Registration from "./pages/Registration/Registration";
 import LoginForm from "./pages/Login/LoginForm";
@@ -13,12 +13,11 @@ import ErrorPage from "./pages/Error Page/ErrorPage";
 import AddSunset from "./pages/AddSunset/AddSunset";
 import DetailSunset from "./pages/DetailSunset/DetailSunset";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-//import ProtectedRoute from "./components/ProtectedRoute";
+import UpdateSunset from "./pages/UpdateSunset/UpdateSunset";
 
 const Root = () => {
   return (
     <>
-      {/* TO DO - Footer einfügen */}
       <NavBar />
       <Outlet />
       <Footer />
@@ -27,17 +26,6 @@ const Root = () => {
 };
 
 function App() {
-  // TO DO - This has to be moved to the AuthContext, when it is ready
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     console.log("%c user is logged in", "color:green");
-  //   } else {
-  //     console.log("%c user is logged out", "color:red");
-  //   }
-  //   return () => {};
-  // }, []);
-
   return (
     <>
       <AuthContextProvider>
@@ -51,10 +39,8 @@ function App() {
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/sunsets" element={<Sunsets />} />
                 <Route path="/sunsets/add" element={<AddSunset />} />
-                {/* <Route path="/sunsets/:id" element={<UpdateSunset />} /> */}
+                <Route path="/sunsets/:id/update" element={<UpdateSunset />} />
                 <Route path="/sunsets/:id" element={<DetailSunset />} />
-                {/* <Route path="/profile" element={<Profile />} /> */}
-
                 <Route
                   path="/profile"
                   element={
@@ -63,8 +49,6 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-
-                {/* <Route path="/faq" element={<FAQ/>}/> */}
                 <Route path="*" element={<ErrorPage />} />
               </Route>
             </Routes>

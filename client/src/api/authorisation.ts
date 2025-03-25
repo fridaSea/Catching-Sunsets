@@ -15,7 +15,6 @@ export async function loginUserApi(
   myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
   const urlencoded = new URLSearchParams();
-  // TO DO - Do not forget to do Input validation (user has to be proper email, username lenght, if there, password should contain at least xy characters/ letters, numbers and symbols )
   urlencoded.append("email", email);
   urlencoded.append("password", password);
 
@@ -113,8 +112,7 @@ export async function deleteProfileApi(userId: string): Promise<void> {
 
 export async function getUserSunsetsApi(): Promise<Array<NewSunset>> {
   const token = localStorage.getItem("token");
-  // console.log("token :>> ", token);
-  console.log(localStorage.getItem("token"));
+  //console.log(localStorage.getItem("token"));
 
   if (!token) {
     throw new Error("No token found");
@@ -122,9 +120,6 @@ export async function getUserSunsetsApi(): Promise<Array<NewSunset>> {
 
   const myHeaders = new Headers();
   myHeaders.append("Authorization", `Bearer ${token}`);
-
-  console.log("Token:", token);
-  console.log("Headers:", myHeaders);
 
   const requestOptions = {
     method: "GET",

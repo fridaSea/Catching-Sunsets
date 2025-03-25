@@ -25,11 +25,6 @@
     background-color: #c7fdfa;
   }
 
-  /* button:focus {
-    outline: none;
-    background-color: #c7fdfa;
-  } */
-
   input {
     box-sizing: border-box;
     flex-grow: 1;
@@ -39,16 +34,11 @@
     margin: 0.25em;
     font: inherit;
     border-radius: 0 10px 10px 0;
-    /* border: none; */
-    /* border-left: none; */
-    /* border: 2px solid #c7fdfa; */
     background-color: #c7fdfa;
     transition: 150ms ease;
     color: rgb(0, 0, 0);
   }
 
-  .card-container {
-  }
   .card {
     margin: 0 auto;
     max-width: 345;
@@ -65,7 +55,6 @@
   @media (max-width: 490px) {
     card-container {
       margin-left: 50px;
-      /* Image is removed on smartphones */
     }
   }
 }
