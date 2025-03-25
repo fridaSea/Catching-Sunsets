@@ -6,7 +6,6 @@ import {
   verifyPassword,
 } from "../utilities/passwordServices.js";
 import { generateToken } from "../utilities/tokenServices.js";
-import { request } from "express";
 
 const registerNewUser = async (req, res) => {
   const { email, password, username, img } = req.body;
@@ -23,7 +22,6 @@ const registerNewUser = async (req, res) => {
     }
 
     if (!existingUser) {
-      // Hash the password - see utilities
       const hashedPassword = await hashingPassword(password);
       //   console.log("hashedPassword :>> ", hashedPassword);
 
@@ -33,7 +31,6 @@ const registerNewUser = async (req, res) => {
         });
       }
       if (hashedPassword) {
-        // console.log("creating user");
         const newUserObject = new UserModel({
           username: username,
           email: email,
@@ -51,7 +48,6 @@ const registerNewUser = async (req, res) => {
             error: "User could not be saved",
           });
         }
-        // console.log("newUser :>> ", newUser);
         if (newUser) {
           return res.status(201).json({
             message: "User registered successfully",
@@ -60,6 +56,7 @@ const registerNewUser = async (req, res) => {
               username: newUser.username,
               email: newUser.email,
               img: newUser.img,
+              postedSunsets: newUser.postedSunsets,
             },
           });
         }
@@ -87,6 +84,7 @@ const updateUser = async (req, res) => {
       existingUser.img = req.body.imgUrl;
       existingUser.username = req.body.username;
       existingUser.email = req.body.email;
+      existingUser.postedSunsets = req.body.postedSunsets;
 
       const userAlreadyExist = await UserModel.findOne({
         email: req.body.email,
@@ -185,9 +183,9 @@ const loginNewUser = async (req, res) => {
               username: existingUser.username,
               email: existingUser.email,
               img: existingUser.img,
+              postedSunsets: existingUser.postedSunsets,
             },
             token: token,
-            // token -> you can also only write this, it is the same as the above
           });
         }
       }
@@ -217,6 +215,7 @@ const getProfile = async (req, res) => {
         username: req.user.username,
         email: req.user.email,
         img: req.user.img,
+        postedSunsets: req.user.postedSunsets,
       },
     });
   }
@@ -224,8 +223,8 @@ const getProfile = async (req, res) => {
 
 // TODO Move to imageController.ts
 const imageUpload = async (req, res) => {
-  console.log("Image upload is working");
-  console.log("req :>> ", req);
+  console.log("USER PROFILE Image upload is working");
+  // console.log("req :>> ", req);
 
   // ist hier nicht sehr genau das error handling
   if (!req.file) {
@@ -235,8 +234,6 @@ const imageUpload = async (req, res) => {
   }
   if (req.file) {
     //we could check the file size here (or do it diretly in Multer)
-    // TO Do - calculate how much  size: 49983 in Bytes,  is in  megabytes and then you decide how many Megabytes you want to allow to upload
-    // 5 Megabytes
 
     //Upload it to Cloudinary
     const uploadedImage = await uploadToCloudinary(req.file);
@@ -258,6 +255,41 @@ const imageUpload = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  console.log("get ALL users is running");
+
+  try {
+    // GET ALL the informations from the postedSunset
+    // const allUsers = await UserModel.find({}).populate("postedSunsets");
+
+    // ONLY GET certain informations from the postedSunset
+    const allUsers = await UserModel.find({}).populate({
+      path: "postedSunsets",
+      select: ["img", "country"],
+    });
+
+    //console.log("allUsers :>> ", allUsers);
+
+    if (allUsers.length === 0) {
+      res.status(200).json({
+        message: "No records in the database",
+        amount: allUsers.length,
+        allUsers,
+      });
+    }
+    res.status(200).json({
+      message: "All the records from our database",
+      amount: allUsers.length,
+      allUsers,
+    });
+  } catch (error) {
+    console.log("error :>> ", error);
+    res.status(500).json({
+      error: "something went wrong",
+    });
+  }
+};
+
 export {
   registerNewUser,
   loginNewUser,
@@ -265,4 +297,5 @@ export {
   imageUpload,
   updateUser,
   deleteUser,
+  getAllUsers,
 };

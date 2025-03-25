@@ -1,6 +1,7 @@
 import express from "express";
 import {
   deleteUser,
+  getAllUsers,
   getProfile,
   imageUpload,
   loginNewUser,
@@ -14,7 +15,7 @@ import multerUpload from "../middelware/multer.js";
 const userRouter = express.Router();
 
 // 2. defining the endpoint (api/favorit and define registerNewUser, then come back and import it here
-
+userRouter.get("/all", getAllUsers);
 userRouter.post("/register", registerNewUser);
 userRouter.post("/login", loginNewUser);
 userRouter.get("/profile", jwtAuth, getProfile);
