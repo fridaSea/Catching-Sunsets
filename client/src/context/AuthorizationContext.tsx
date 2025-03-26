@@ -24,6 +24,7 @@ type AuthContextType = {
   getUserProfile: () => Promise<User>;
   updateUser: (userUpdate: User) => Promise<void>;
   updateSunset: (sunsetUpdate: NewSunset) => Promise<void>;
+  isAuthenticated: boolean;
   // getSunsetPost: () => Promise<void>;
   // createdSunset: NewSunset | null;
 };
@@ -50,6 +51,7 @@ const contextInitialValue: AuthContextType = {
   updateSunset: () => {
     throw new Error("context not initialized");
   },
+  isAuthenticated: false,
   // createdSunset: null,
   // getSunsetPost: () => {
   //   throw new Error("context not initialized");
@@ -197,6 +199,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         updateSunset,
         login,
         logout,
+        isAuthenticated,
       }}
     >
       {children}

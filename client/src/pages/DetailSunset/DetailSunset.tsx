@@ -1,21 +1,20 @@
-import { FormEvent, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { deleteSunsetApi, getSunsetApi } from "../../api/sunset";
 import { NewSunset } from "../../types/customTypes";
 import { MenuContext } from "../../context/MenuContext";
 import { Alert, Snackbar } from "@mui/material";
 import "./DetailSunset.css";
-import { updateSunsetApi } from "../../api/sunset";
 import { AuthContext } from "../../context/AuthorizationContext";
 
 function DetailSunset() {
   const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar
   const navigate = useNavigate();
-  const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
+  const { isMenuOpen } = useContext(MenuContext);
   const { id } = useParams();
   const [sunset, setSunset] = useState<NewSunset | null>(null);
-  const { updateSunset, loggedUser } = useContext(AuthContext);
+  const { loggedUser } = useContext(AuthContext);
 
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
@@ -37,42 +36,42 @@ function DetailSunset() {
     getSunset();
   }, []);
 
-  const handleUpdateSunset = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // const handleUpdateSunset = async (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
 
-    const formdata = new FormData(e.target as HTMLFormElement);
+  //   const formdata = new FormData(e.target as HTMLFormElement);
 
-    const countryUpdate: string =
-      (formdata.get("newCountry") as string) || sunset?.country;
+  //   const countryUpdate: string =
+  //     (formdata.get("newCountry") as string) || sunset?.country;
 
-    const descriptionUpdate: string =
-      (formdata.get("newDescription") as string) || sunset?.description;
-    try {
-      await updateSunsetApi({
-        id: sunset.id,
-        imgUrl: sunset?.img,
-        country: countryUpdate,
-        description: descriptionUpdate,
-      });
+  //   const descriptionUpdate: string =
+  //     (formdata.get("newDescription") as string) || sunset?.description;
+  //   try {
+  //     await updateSunsetApi({
+  //       id: sunset.id,
+  //       imgUrl: sunset?.img,
+  //       country: countryUpdate,
+  //       description: descriptionUpdate,
+  //     });
 
-      updateSunset({
-        ...sunset,
-        country: countryUpdate,
-        description: descriptionUpdate,
-      });
+  //     updateSunset({
+  //       ...sunset,
+  //       country: countryUpdate,
+  //       description: descriptionUpdate,
+  //     });
 
-      setSnackbarMessage("Sunset updated successfully!");
-      setOpenSnackbar(true);
-      setTimeout(() => {
-        navigate("/sunsets");
-      }, 1500);
-    } catch (error) {
-      setSnackbarMessage("Failed to update Sunset!");
-      setOpenSnackbar(true);
-    }
-  };
+  //     setSnackbarMessage("Sunset updated successfully!");
+  //     setOpenSnackbar(true);
+  //     setTimeout(() => {
+  //       navigate("/sunsets");
+  //     }, 1500);
+  //   } catch (error) {
+  //     setSnackbarMessage("Failed to update Sunset!");
+  //     setOpenSnackbar(true);
+  //   }
+  // };
 
-  const handleSunsetDelete = async (e: MouseEvent) => {
+  const handleSunsetDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       await deleteSunsetApi(sunset.id);

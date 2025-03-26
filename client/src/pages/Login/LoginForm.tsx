@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import "./LoginForm.css";
-import { LoginCredentials, User } from "../../types/customTypes";
+import { LoginCredentials } from "../../types/customTypes";
 import { MenuContext } from "../../context/MenuContext";
 import { useNavigate } from "react-router";
 import { Alert, Snackbar } from "@mui/material";
