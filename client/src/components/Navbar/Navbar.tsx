@@ -1,12 +1,25 @@
 import { useContext } from "react";
 import "./Navbar.css";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { MenuContext } from "../../context/MenuContext";
+import { AuthContext } from "../../context/AuthorizationContext";
 
 const NavBar = () => {
   const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
+  const { loggedUser, login, logout } = useContext(AuthContext);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const logoutUser = () => {
+    logout();
+    setIsMenuOpen(false);
+  };
+
+  const loginUser = () => {
+    login("email", "password");
+    setIsMenuOpen(false);
   };
 
   return (
@@ -29,23 +42,45 @@ const NavBar = () => {
       <div className={"navbar-links" + (isMenuOpen ? " " + "active" : "")}>
         <NavLink
           to="/sunsets"
-          className={({isActive}) => isActive ? 'nav-link active-link' : 'nav-link'}
+          className={({ isActive }) =>
+            isActive ? "nav-link active-link" : "nav-link"
+          }
           onClick={() => setIsMenuOpen(false)}
         >
           Sunsets
         </NavLink>
-
-        <NavLink
-          to="/login"
-          className={({isActive}) => isActive ? 'nav-link active-link' : 'nav-link'}
-          onClick={() => setIsMenuOpen(false)}
-        >
-          Login
-        </NavLink>
-
+        <ul className="nav-item">
+          {loggedUser ? (
+            <NavLink
+              to="/sunsets"
+              className={({ isActive }) =>
+                isActive ? "nav-link nav-active" : "nav-link"
+              }
+              onClick={logoutUser}
+              color="inherit"
+            >
+              Log out
+            </NavLink>
+          ) : (
+            <NavLink
+              to="/login"
+              // variant="danger"
+              className={({ isActive }) =>
+                isActive ? "nav-link nav-active" : "nav-link"
+              }
+              // onClick={login}
+              //onClick={() => login("email", "password")}
+              onClick={loginUser}
+            >
+              Login
+            </NavLink>
+          )}
+        </ul>
         <NavLink
           to="/profile"
-          className={({isActive}) => isActive ? 'nav-link active-link' : 'nav-link'}
+          className={({ isActive }) =>
+            isActive ? "nav-link active-link" : "nav-link"
+          }
           onClick={() => setIsMenuOpen(false)}
         >
           Profile
