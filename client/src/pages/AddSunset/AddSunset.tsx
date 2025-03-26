@@ -1,10 +1,8 @@
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { MenuContext } from "../../context/MenuContext";
 import { createSunsetApi } from "../../api/sunset";
-import { NavLink, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import "./AddSunset.css";
-import { baseUrl } from "../../utilities/urls";
-import { SunsetImageUploadOkResponse } from "../../types/customTypes";
 import { uploadNewImageApi } from "../../api/image";
 import { AuthContext } from "../../context/AuthorizationContext";
 import { Alert, Snackbar } from "@mui/material";
@@ -14,6 +12,9 @@ function AddSunset() {
   const { loggedUser } = useContext(AuthContext);
   const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar
+  const [snackbarSeverity, setSnackbarSeverity] = useState<
+    "success" | "error" | "info"
+  >("info"); // Severity für Snackbar
   const navigate = useNavigate();
 
   const handleSnackbarClose = () => {
@@ -49,6 +50,7 @@ function AddSunset() {
 
     if (!selectedFile) {
       setSnackbarMessage("Please select an image!");
+      setSnackbarSeverity("info"); // Info severity für die Nachricht
       setOpenSnackbar(true);
       return;
     }
@@ -58,6 +60,7 @@ function AddSunset() {
     if (!uploadedSunsetImage.imgUrl) {
       //console.log("img couldn't be uploaded");
       setSnackbarMessage("Image upload failed!");
+      setSnackbarSeverity("error"); // Error severity für diese Nachricht
       setOpenSnackbar(true);
       return;
     }
@@ -68,9 +71,6 @@ function AddSunset() {
         country: newSunset.country,
         description: newSunset.description,
         img: uploadedSunsetImage.imgUrl,
-        // ownerUserId: loggedUser.id,
-        //NEW 19.03
-        //sunsetOwner: loggedUser.id,
         ownerUserId: loggedUser.id,
         id: newSunset.id,
       });
@@ -78,37 +78,36 @@ function AddSunset() {
 
       if (uploadedSunset.message === "New Sunset Post added successfully") {
         setSnackbarMessage("Sunset posted successfully!");
+        setSnackbarSeverity("success");
         setOpenSnackbar(true);
         setTimeout(() => {
-          navigate("/sunsets"); // Nach erfolgreichem Upload weiter zur Sunset-Liste
+          navigate("/sunsets");
         }, 2000);
-        //     navigate("/sunsets");
-        //     console.log("result/ Sunset upload sueccessfully :>> ", uploadedSunset);
-        //   }
-        //   if (uploadedSunset.message !== "New Sunset Post added successfully") {
-        //     alert("couldn't upload the sunset");
-        //   }
-        //   // navigate("/sunsets");
       } else {
-        setSnackbarMessage("Couldn't upload the sunset!");
+        setSnackbarMessage("Failed to upload the sunset!");
+        setSnackbarSeverity("error");
         setOpenSnackbar(true);
       }
     } catch (error) {
-      setSnackbarMessage("Error posting sunset!");
+      setSnackbarMessage("Failed posting sunset!");
+      setSnackbarSeverity("error");
       setOpenSnackbar(true);
     }
 
-    // console.log("result before submitting sunset :>> ", result);
     console.log("uploadedSunsetImage :>> ", uploadedSunsetImage);
   };
 
   // New Sunset Image
-
   const handleNewSunsetInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNewSunset({ ...newSunset!, [e.target.name]: e.target.value });
     //console.log("e.target :>> ", e.target.name, e.target.id, newSunset);
   };
 
+  const handleResizeTextarea = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const textarea = e.target;
+    textarea.style.height = "auto"; // Setzt die Höhe zurück
+    textarea.style.height = `${textarea.scrollHeight}px`; // Setzt die Höhe auf die Scrollhöhe
+  };
   // Update Post
   //const [updatedSunset, setUpdatedSunset] = useState
   // const handleSunsetChange = async (e: FormEvent<HTMLFormElement>) => {
@@ -137,64 +136,77 @@ function AddSunset() {
 
   return (
     <div
-      className={`profile component-content-container ${
+      className={`add-sunset profile component-content-container ${
         isMenuOpen ? "content-container-menu-open" : ""
       }`}
     >
-      <h2>Post something new</h2>
-      {/* Image Upload  */}
-      <div>
-        <h3>Choose your Sunset Picture</h3>
-        <form
-          // onSubmit={handleImageUpload}
-          onSubmit={submitNewSunset}
-        >
-          <input
-            type="file"
-            id="username-input"
-            accept="image/*"
-            onChange={handleAttachFile}
-          />
-          <br />
-          <input
-            type="text"
-            id="country-input"
-            name="country"
-            placeholder="country"
-            // pattern="^[A-Za-z0-9]{3,16}$"
-            // allow the user to make use of any characters apart from special characters and whitespaces
-            onChange={handleNewSunsetInputChange}
-            // onBlur={handleBlur}
-          />
-          <br />
-          <input
-            type="text"
-            id="description-input"
-            name="description"
-            placeholder="description"
-            // pattern="^[A-Za-z0-9]{3,16}$"
-            // allow the user to make use of any characters apart from special characters and whitespaces
-            onChange={handleNewSunsetInputChange}
-            // onBlur={handleBlur}
-          />
-          <br />
-          <button>Save</button>
-          {/* TO DO - If Sunset upload sucessfully -> redirect to Detais or Listing Page */}
+      <button
+        className="icon-arrow-left2"
+        onClick={() => navigate(-1)}
+      ></button>
+      <h1>Create a new post</h1>
+      <div className="card-container">
+        <h2>Choose your Sunset Picture</h2>
+        <form onSubmit={submitNewSunset}>
+          <div className="card-image">
+            <input
+              type="file"
+              // id="username-input"
+              id="image-input"
+              accept="image/*"
+              onChange={handleAttachFile}
+              aria-label="Upload your profil picture here"
+            />
+          </div>
+
+          <div className="card-input">
+            <h2>Choose your Sunset Information</h2>
+            <p>Country: </p>
+            <input
+              type="text"
+              id="country-input"
+              name="country"
+              placeholder="country"
+              // pattern="^[A-Za-z0-9]{3,16}$"
+              // allow the user to make use of any characters apart from special characters and whitespaces
+              onChange={handleNewSunsetInputChange}
+              // onBlur={handleBlur}
+            />
+
+            <p>Description: </p>
+            <textarea
+              id="description-input"
+              name="description"
+              placeholder="description"
+              rows={4} // Startgröße (4 Zeilen hoch)
+              // pattern="^[A-Za-z0-9]{3,16}$"
+              // allow the user to make use of any characters apart from special characters and whitespaces
+              onChange={handleNewSunsetInputChange}
+              //ChangeEvent<HTMLTextAreaElement>
+              onInput={handleResizeTextarea} // Dynamisch anpassen der Größe beim Tippen
+              // onBlur={handleBlur}
+            />
+            {/* <input
+              type="text"
+              id="description-input"
+              name="description"
+              placeholder="description"
+              // pattern="^[A-Za-z0-9]{3,16}$"
+              // allow the user to make use of any characters apart from special characters and whitespaces
+              onChange={handleNewSunsetInputChange}
+              // onBlur={handleBlur}
+            /> */}
+          </div>
+          <button className="button">Save a new sunset</button>
         </form>
       </div>
-      <div>
-        <NavLink to="/sunsets">
-          <button className="button">Back to the Sunset Magic</button>
-        </NavLink>
-      </div>
-      {/* Snackbar für Bestätigungsmeldungen */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000} // Dauer für die Anzeige der Snackbar
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={handleSnackbarClose} severity="success">
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
