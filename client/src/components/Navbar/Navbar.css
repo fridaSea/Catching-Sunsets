@@ -57,7 +57,7 @@ a {
   color: rgba(255, 255, 255, 1);
 }
 
-a.nav-link.active-link{
+a.nav-link.active-link {
   color: #5fe9e0;
 }
 
@@ -80,11 +80,11 @@ a.nav-link.active-link{
   transition: all 0.3s ease-in-out;
 }
 
-
 .component-content-container {
   padding: 20px;
-  padding-top: 6rem;
-  min-height: 100vh;
+  padding-top: 4rem;
+  /* padding-top: 6rem; */
+  min-height: calc(100dvh - 66.5px);
   transition: transform 0.3s ease-in-out;
 }
 
@@ -151,6 +151,6 @@ a.nav-link.active-link{
   }
 
   .nav-link.active-link {
-    color: #5fe9e0;  /* Türkis für den aktiven Link */
+    color: #5fe9e0;
   }
 }

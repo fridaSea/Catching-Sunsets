@@ -1,0 +1,23 @@
+.add-sunset {
+  margin-top: 35px;
+}
+
+.add-sunset {
+  .card-container {
+    margin-top: 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .card-image {
+    margin: 10px 0;
+  }
+  .card-input {
+    margin-top: 35px;
+    margin-bottom: 15px;
+    line-height: 1.75;
+  }
+}
