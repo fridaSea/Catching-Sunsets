@@ -13,13 +13,13 @@ const manifestForPlugIn: Partial<VitePWAOptions> = {
       "This app was created to share our favorite sunsets and to enjoy the magic of sunsets together.",
     icons: [
       {
-        src: "assets/sunset_pwa_icon_x512.png",
+        src: "assets/sunsetcloud_pwa_icon_x512.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "any maskable",
       },
       {
-        src: "assets/sunset_pwa_icon_x192.png",
+        src: "assets/sunsetcloud_pwa_icon_x192.png",
         sizes: "192x192",
         type: "image/png",
         purpose: "any maskable",
