@@ -2,28 +2,26 @@ import { MenuContext } from "../../context/MenuContext";
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthorizationContext";
 import { baseUrl } from "../../utilities/urls";
-import {
-  ImageUploadOkResponse,
-  NewSunset,
-  UpdateOkResponse,
-  UpdateUser,
-} from "../../types/customTypes";
+import { ImageUploadOkResponse, NewSunset } from "../../types/customTypes";
 import {
   deleteProfileApi,
   getUserSunsetsApi,
   updateProfileApi,
 } from "../../api/authorisation";
-import { NavLink, useNavigate } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import {
   Alert,
   Card,
+  CardActions,
   CardContent,
   CardMedia,
+  IconButton,
   Snackbar,
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import "./Profile.css";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 function Profile() {
   //   location.reload();
@@ -35,32 +33,18 @@ function Profile() {
   //   }, 100);
   // }
   // refresh();
-  const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
-  const { loggedUser, getUserProfile, updateUser, isAuthenticated } =
-    useContext(AuthContext);
-  //const [loading, setLoading] = useState(true);
+  const { isMenuOpen } = useContext(MenuContext);
+  const { loggedUser, getUserProfile, updateUser } = useContext(AuthContext);
 
   const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar
   const navigate = useNavigate();
 
-  // useEffect zum Laden der Benutzerdaten
-  // useEffect(() => {
-  //   if (!loggedUser) {
-  //     // Lade Benutzerdaten, wenn sie nicht vorhanden sind
-  //     getUserProfile().finally(() => setLoading(false)); // Setzt loading auf false nach erfolgreichem Laden
-  //   } else {
-  //     setLoading(false); // Wenn loggedUser bereits existiert, setze loading auf false
-  //   }
-  // }, [loggedUser, getUserProfile]);
+  const [sunsets, setSunsets] = useState<NewSunset[]>([]);
 
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
   };
-
-  const [loginError, setLoginError] = useState<Error | null>(null);
-  //console.log('loggedUser :>> ', loggedUser);
-  // console.log('result.user :>> ', result.user)
 
   useEffect(() => {
     if (loggedUser === null) {
@@ -68,8 +52,8 @@ function Profile() {
     }
   }, [loggedUser, getUserProfile]);
 
-  // IMAGE UPLOAD - KANN ICH DAS IN EINE CONTEXT PACKEN??
   const [selectedFile, setSelectedFile] = useState<File | string>("");
+
   const handleAttachFile = (e: ChangeEvent<HTMLInputElement>) => {
     console.log("e.target :>> ", e);
     const file = e.target.files?.[0];
@@ -78,10 +62,9 @@ function Profile() {
       setSelectedFile(file);
     }
   };
-  const handleImageUpload = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+
+  const handleImageUpload = async () => {
     console.log("selectedFile :>> ", selectedFile);
-    // Code from Postman for the Image Upload
     const formdata = new FormData();
     formdata.append("image", selectedFile);
 
@@ -92,21 +75,12 @@ function Profile() {
 
     try {
       const response = await fetch(
-        // `${baseUrl}/api/users/uploadImage`,
         `${baseUrl}/api/image/upload`,
         requestOptions
       );
 
       const result = (await response.json()) as ImageUploadOkResponse;
-      const userUpdate = {
-        ...loggedUser!,
-        img: result.imgUrl,
-        username: result.username,
-        //new
-      };
-
-      await updateProfileApi(userUpdate);
-      updateUser(userUpdate);
+      return result.imgUrl;
 
       console.log("result :>> ", result, loggedUser);
     } catch (error) {
@@ -165,9 +139,9 @@ function Profile() {
   {
     /* CHANGE USERNAME & EMAIL  */
   }
-  const [newUsername, setNewUsername] = useState<string>(
-    loggedUser?.username || ""
-  );
+  // const [newUsername, setNewUsername] = useState<string>(
+  //   loggedUser?.username || ""
+  // );
 
   // const handleEmailChange = async (newEmail: string) => {
   //   // Prüfen, ob die neue E-Mail mit der aktuellen E-Mail des Nutzers übereinstimmt
@@ -186,25 +160,19 @@ function Profile() {
   const handleUserChange = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    const imageUrl = await handleImageUpload();
+
     const formdata = new FormData(e.target as HTMLFormElement);
 
     const emailUpdate: string =
       (formdata.get("newEmail") as string) || loggedUser?.email;
-
-    // if (loggedUser.email === emailUpdate) {
-    //   console.error("Email already exist in the Database and can`t be changed");
-    // }
-
-    // Debugging-Log
-    // console.log("Logged User Email:", loggedUser?.email);
-    // console.log("New Email Attempt:", emailUpdate);
 
     const userNameUpdate: string =
       (formdata.get("newUsername") as string) || loggedUser?.username;
 
     await updateProfileApi({
       id: loggedUser.id,
-      img: loggedUser.img,
+      img: imageUrl,
       username: userNameUpdate,
       email: emailUpdate,
     });
@@ -213,44 +181,36 @@ function Profile() {
       ...loggedUser,
       email: emailUpdate,
       username: userNameUpdate,
+      img: imageUrl,
     });
     try {
-      // Erfolgreiche Update-Bestätigung
       setSnackbarMessage("Profil updated successfully!");
       setOpenSnackbar(true);
       setTimeout(() => {
-        navigate("/sunsets"); // Zur Liste der Sunsets navigieren
-      }, 1500); // Wartezeit für Snackbar
+        navigate("/profile");
+      }, 1500);
     } catch (error) {
       setSnackbarMessage("Failed to update Profile!");
       setOpenSnackbar(true);
     }
   };
 
-  const handleUserDelete = async (e: MouseEvent) => {
+  const handleUserDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // alert("Delete Button funtkioniert");
 
     deleteProfileApi(loggedUser.id);
     try {
-      // Erfolgreiche Update-Bestätigung
       setSnackbarMessage("Userprofil deleted successfully!");
       setOpenSnackbar(true);
       setTimeout(() => {
-        navigate("/sunsets"); // Zur Liste der Sunsets navigieren
-      }, 1500); // Wartezeit für Snackbar
+        navigate("/sunsets");
+      }, 1500);
     } catch (error) {
       setSnackbarMessage("Failed to delete Profile!");
       setOpenSnackbar(true);
     }
   };
 
-  // HOle die Sunsets des Users
-
-  const [sunsets, setSunsets] = useState<NewSunset[]>([]); // anpassen, je nach Struktur der API-Daten
-  //const [loading, setLoading] = useState<boolean>(true);
-
-  // ?? KANN ICH NICHT VIELLEICHT DAS USER PROFILE NUTZEN; DENN DA SIND DIE POSTESSUNSETS JA SCHON VORHANDEN???
   // TO DO - ERROR HANDLING ??
   useEffect(() => {
     const fetchUserSunsets = async () => {
@@ -270,7 +230,6 @@ function Profile() {
 
       <br />
 
-      {/* if we have a user  */}
       <div>
         {loggedUser && (
           <div>
@@ -278,9 +237,9 @@ function Profile() {
 
             <div>
               <img
+                className="avatar-img"
                 src={loggedUser.img ? loggedUser.img : null}
                 alt={`Avatar image of user ${loggedUser.username}`}
-                style={{ width: "150px", height: "auto" }}
               />
             </div>
 
@@ -290,41 +249,38 @@ function Profile() {
 
             <br />
             {/* Image Upload */}
-            <p>Change your Profile Image:</p>
-            <div>
-              <form onSubmit={handleImageUpload}>
-                <input
-                  type="file"
-                  name="username"
-                  id="username-input"
-                  // accept="image/*"
-                  onChange={handleAttachFile}
-                />
-                <br />
-                <button>Upload Image</button>
-              </form>
-            </div>
-            <br />
+            <h2>Change your Profile Informations</h2>
             {/* CHANGE USERNAME & EMAIL  */}
             <div>
-              <p>Change your Profile settings </p>
               <form onSubmit={handleUserChange}>
+                <input
+                  type="file"
+                  name="imageupload"
+                  id="image-input"
+                  // accept="image/*"
+                  onChange={handleAttachFile}
+                  aria-label="Uploade your Profil Image"
+                />
+                <br />
                 <input
                   type="text"
                   name="newUsername"
                   id="newUsername"
                   defaultValue={loggedUser.username}
+                  aria-label="Update your username"
                 />
                 <br />
-
-                <input
+                {/* <input
                   type="email"
                   name="newEmail"
                   id="newEmail"
                   defaultValue={loggedUser.email}
                 />
-                <br />
-                <button type="submit">Save</button>
+                <br /> */}
+
+                <button type="submit" className="button">
+                  Save
+                </button>
               </form>
             </div>
 
@@ -362,10 +318,15 @@ function Profile() {
               </div>
             </div> */}
             <br />
-            <button onClick={handleUserDelete}> Delete Account</button>
+            <hr />
+            <h2>Delete your Account</h2>
+            <button onClick={handleUserDelete} className="button">
+              Delete Account
+            </button>
           </div>
         )}
         <br />
+        <hr />
         <div>
           <h2>Your own Sunsets</h2>
         </div>
@@ -375,29 +336,52 @@ function Profile() {
           <Grid container spacing={2}>
             {sunsets.map((sunset) => (
               <Grid
-                size={{ xs: 12, sm: 6, md: 3, lg: 2 }}
-                // size={{ xs: 12, sm: 6, md: 4}}
+                //size={{ xs: 12, sm: 6, md: 3, lg: 2 }}
+                size={{ xs: 12, sm: 6, md: 4 }}
                 key={sunset.id}
                 className="card-container"
               >
-                <NavLink
-                  to={`/sunsets/${sunset._id}`}
-                  // key={index}
-                >
-                  <Card className="card">
-                    {/* Card Media for image */}
+                <Card className="card">
+                  {/* Card Media for image */}
+                  <NavLink
+                    to={`/sunsets/${sunset._id}`}
+                    // key={index}
+                  >
                     <CardMedia
                       component="img"
                       height="140"
                       image={sunset.img} //
                       alt={`Sunset image of user with the username ${loggedUser.username}`}
                     />
-                    {/* Card Content */}
-                    <CardContent>
-                      <Typography variant="body2">{sunset.country}</Typography>
-                    </CardContent>
-                  </Card>
-                </NavLink>
+                  </NavLink>
+                  {/* Card Content */}
+                  <CardContent>
+                    <Typography variant="body2" className="no-wrap">
+                      {sunset.country}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    {/* Edit/Update-Button nur anzeigen, wenn der Benutzer der Ersteller ist */}
+                    {loggedUser &&
+                      sunset.ownerUserId &&
+                      loggedUser.id === sunset.ownerUserId && (
+                        <IconButton
+                          className="icon"
+                          aria-label="Button to get to the update sunset page"
+                        >
+                          <Link to={`/sunsets/${sunset._id}/update`}>
+                            <SettingsIcon aria-label="Button to get to the update sunset page" />
+                          </Link>
+                        </IconButton>
+                      )}
+
+                    {/* <IconButton className="icon" aria-label="update">
+                      <Link to={`/sunsets/${sunset.id}/update`}>
+                        <SettingsIcon />
+                      </Link>
+                    </IconButton> */}
+                  </CardActions>
+                </Card>
               </Grid>
             ))}
           </Grid>

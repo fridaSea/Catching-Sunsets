@@ -15,6 +15,7 @@ import { AuthContext } from "../../context/AuthorizationContext";
 
 function Registration() {
   const { isMenuOpen } = useContext(MenuContext);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar

@@ -1,14 +1,14 @@
+import "./AddSunset.css";
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { MenuContext } from "../../context/MenuContext";
 import { createSunsetApi } from "../../api/sunset";
 import { useNavigate } from "react-router";
-import "./AddSunset.css";
 import { uploadNewImageApi } from "../../api/image";
 import { AuthContext } from "../../context/AuthorizationContext";
 import { Alert, Snackbar } from "@mui/material";
 
 function AddSunset() {
-  const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
+  const { isMenuOpen } = useContext(MenuContext);
   const { loggedUser } = useContext(AuthContext);
   const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar
@@ -55,7 +55,6 @@ function AddSunset() {
       return;
     }
 
-    // Bild wird hochgeladen
     const uploadedSunsetImage = await uploadNewImageApi(selectedFile);
     if (!uploadedSunsetImage.imgUrl) {
       //console.log("img couldn't be uploaded");
@@ -98,7 +97,9 @@ function AddSunset() {
   };
 
   // New Sunset Image
-  const handleNewSunsetInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleNewSunsetInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setNewSunset({ ...newSunset!, [e.target.name]: e.target.value });
     //console.log("e.target :>> ", e.target.name, e.target.id, newSunset);
   };
@@ -108,31 +109,6 @@ function AddSunset() {
     textarea.style.height = "auto"; // Setzt die Höhe zurück
     textarea.style.height = `${textarea.scrollHeight}px`; // Setzt die Höhe auf die Scrollhöhe
   };
-  // Update Post
-  //const [updatedSunset, setUpdatedSunset] = useState
-  // const handleSunsetChange = async (e: FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-
-  //   const formdata = new FormData(e.target as HTMLFormElement);
-
-  //   const countryUpdate: string =
-  //     (formdata.get("newCountry") as string) || newSunset?.country;
-  //   const descriptionUpdate: string =
-  //     (formdata.get("newDescription") as string) || loggedUser?.description;
-
-  //   await updateSunsetApi({
-  //     id: loggedUser.id,
-  //     //img: loggedUser.img,
-  //     username: userNameUpdate,
-  //     email: emailUpdate,
-  //   });
-
-  //   updateUser({
-  //     ...loggedUser,
-  //     email: emailUpdate,
-  //     username: userNameUpdate,
-  //   });
-  // };
 
   return (
     <div
@@ -151,7 +127,6 @@ function AddSunset() {
           <div className="card-image">
             <input
               type="file"
-              // id="username-input"
               id="image-input"
               accept="image/*"
               onChange={handleAttachFile}
@@ -179,23 +154,10 @@ function AddSunset() {
               name="description"
               placeholder="description"
               rows={4} // Startgröße (4 Zeilen hoch)
-              // pattern="^[A-Za-z0-9]{3,16}$"
-              // allow the user to make use of any characters apart from special characters and whitespaces
               onChange={handleNewSunsetInputChange}
-              //ChangeEvent<HTMLTextAreaElement>
               onInput={handleResizeTextarea} // Dynamisch anpassen der Größe beim Tippen
               // onBlur={handleBlur}
             />
-            {/* <input
-              type="text"
-              id="description-input"
-              name="description"
-              placeholder="description"
-              // pattern="^[A-Za-z0-9]{3,16}$"
-              // allow the user to make use of any characters apart from special characters and whitespaces
-              onChange={handleNewSunsetInputChange}
-              // onBlur={handleBlur}
-            /> */}
           </div>
           <button className="button">Save a new sunset</button>
         </form>

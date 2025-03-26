@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import "./LoginForm.css";
 import { LoginCredentials, User } from "../../types/customTypes";
 import { MenuContext } from "../../context/MenuContext";
-import { loginUserApi } from "../../api/authorisation";
 import { useNavigate } from "react-router";
 import { Alert, Snackbar } from "@mui/material";
 import { AuthContext } from "../../context/AuthorizationContext";
@@ -11,8 +10,8 @@ function LoginForm() {
   const { isMenuOpen } = useContext(MenuContext);
   const authContext = useContext(AuthContext);
 
-  const [openSnackbar, setOpenSnackbar] = useState(false); // Zustand für Snackbar
-  const [snackbarMessage, setSnackbarMessage] = useState(""); // Nachricht für Snackbar
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSnackbarClose = () => {
@@ -25,26 +24,17 @@ function LoginForm() {
     setShowPassword(!showPassword);
   };
 
-  const [user, setUser] = useState<User | null>(null);
   const [loginError, setLoginError] = useState<Error | null>(null);
-
-  const [loading, setLoading] = useState(null);
 
   const [loginCredentials, setLoginCredentials] = useState<LoginCredentials>({
     email: "",
     password: "",
   });
 
-  // User (below) should be in the Auth Context TO DO
   const [fieldErrors, setFieldErrors] = useState({
     email: "",
     password: "",
   });
-
-  // https://upmostly.com/tutorials/how-to-refresh-a-page-or-component-in-react
-  // function refreshPage() {
-  //   window.location.reload(false);
-  // }
 
   const handleLoginInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLoginCredentials({
@@ -82,17 +72,12 @@ function LoginForm() {
         loginCredentials.email,
         loginCredentials.password
       );
-      // Redirect
-      // navigate("/profile");
-      // setTimeout(() => {
-      //   navigate("/profile"); // Zur Liste der Sunsets navigieren
-      // }, 2500); // Wartezeit für Snackbar
-      // Erfolgreiche Update-Bestätigung
+
       setSnackbarMessage("Login was successfull!");
       setOpenSnackbar(true);
       setTimeout(() => {
-        navigate("/profile"); // Zur Liste der Sunsets navigieren
-      }, 2000); // Wartezeit für Snackbar
+        navigate("/profile");
+      }, 2000);
     } catch (error) {
       console.log("error :>> ", error);
       setLoginError(error);
@@ -100,16 +85,10 @@ function LoginForm() {
       setOpenSnackbar(true);
     }
   };
-  // TO DO - Login sucessfull - Redirect to some Page
 
-  // TO DO - Logout button - also has to be moved
-  const logout = () => {
-    localStorage.removeItem("token");
-    // setUser(null) -> in the AuthCOntext
-  };
   return (
     <div
-      className={`loginForm component-content-container ${
+      className={`login-form component-content-container ${
         isMenuOpen ? "content-container-menu-open" : ""
       }`}
     >
@@ -181,10 +160,9 @@ function LoginForm() {
           Don`t have an account? Register
           <a href="./registration"> here</a>.
         </p>
-        {/* Snackbar für Bestätigungsmeldungen */}
         <Snackbar
           open={openSnackbar}
-          autoHideDuration={3000} // Dauer für die Anzeige der Snackbar
+          autoHideDuration={3000}
           onClose={handleSnackbarClose}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >

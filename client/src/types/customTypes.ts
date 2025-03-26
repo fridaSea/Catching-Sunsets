@@ -62,6 +62,7 @@ export type NewSunsetOkResponse = {
 
 export type NewSunset = {
   id: string;
+  _id?: string; //optionales Feld für _id
   img: string;
   country: string;
   description: string;

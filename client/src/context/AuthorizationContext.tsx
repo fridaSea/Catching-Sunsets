@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { GetSunsetOkResponse, NewSunset, User } from "../types/customTypes";
+import { NewSunset, User } from "../types/customTypes";
 import { getUserProfileApi, loginUserApi } from "../api/authorisation";
 import { baseUrl } from "../utilities/urls";
 
@@ -20,11 +20,12 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   loggedUser: User | null;
-  getUserProfile: () => Promise<void>;
+  loggedSunset: NewSunset | null;
+  getUserProfile: () => Promise<User>;
   updateUser: (userUpdate: User) => Promise<void>;
   updateSunset: (sunsetUpdate: NewSunset) => Promise<void>;
-  getSunsetPost: () => Promise<void>;
-  createdSunset: NewSunset | null;
+  // getSunsetPost: () => Promise<void>;
+  // createdSunset: NewSunset | null;
 };
 
 //6 Create a variable with the initial value of all the elements we share in our context (at least the ones ...)
@@ -39,6 +40,7 @@ const contextInitialValue: AuthContextType = {
     throw new Error("context not initialized");
   },
   loggedUser: null,
+  loggedSunset: null,
   getUserProfile: () => {
     throw new Error("context not initialized");
   },
@@ -48,10 +50,10 @@ const contextInitialValue: AuthContextType = {
   updateSunset: () => {
     throw new Error("context not initialized");
   },
-  createdSunset: null,
-  getSunsetPost: () => {
-    throw new Error("context not initialized");
-  },
+  // createdSunset: null,
+  // getSunsetPost: () => {
+  //   throw new Error("context not initialized");
+  // },
 };
 
 // 1. Create and export the context

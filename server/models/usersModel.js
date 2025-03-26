@@ -35,10 +35,24 @@ const userSchema = new mongoose.Schema(
     img: {
       type: String,
       required: false,
-      // another option we can use, is to provide a default value for each field
       default:
         "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg",
     },
+    postedSunsets: [
+      {
+        require: false,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Sunset",
+      },
+    ],
+    // postedSunsets: [
+    //   {
+    //     img: { type: String, required: true },
+    //     country: { type: String, required: true },
+    //     description: { type: String, required: true },
+    //     //likes: Number,
+    //   },
+    // ],
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_At" } }
 );
