@@ -1,9 +1,36 @@
 .detail-sunset {
-  .arrow-back-icon {
-    color: white;
+  .card-container {
+    margin-top: 50px;
+    line-height: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
   }
-  .back-button {
-    color: white;
-    fill: none;
+  .card-image {
+    margin-bottom: 20px;
+    display: block;
+    margin: 0 auto;
+    width: 50%;
+  }
+
+  .card-container p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .bold {
+    font-weight: bold;
+  }
+
+  @media (max-width: 490px) {
+    .card-image {
+      margin-bottom: 20px;
+      display: block;
+      margin: 0 auto;
+      width: 80%;
+      padding-top: 10px;
+    }
   }
 }

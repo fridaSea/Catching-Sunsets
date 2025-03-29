@@ -6,15 +6,6 @@ export type User = {
   img: string;
 };
 
-// export type UserWithSunsets = {
-//   id: string;
-//   username: string;
-//   email: string;
-//   password: string;
-//   img: string;
-//   uploadedImages: string[];
-// };
-
 export type UpdateUser = {
   id: string;
   username: string;
@@ -46,20 +37,15 @@ export type LoginOkResponse = {
   token: string;
 };
 
-// export type GetProfileOkResponse = {
-//   message: string;
-//   user: User;
-// };
 export type GetProfileOkResponse = {
   message: string;
-  user: UserWithSunsets;
+  user: User;
 };
 
 export type ImageUploadOkResponse = {
   message: string;
   imgUrl: string;
   username: string;
-  //new
 };
 
 export type SunsetImageUploadOkResponse = {
@@ -67,7 +53,6 @@ export type SunsetImageUploadOkResponse = {
   imgUrl: string;
   country: string;
   description: string;
-  //new
 };
 
 export type NewSunsetOkResponse = {
@@ -77,16 +62,13 @@ export type NewSunsetOkResponse = {
 
 export type NewSunset = {
   id: string;
+  _id?: string; //optionales Feld für _id
   img: string;
   country: string;
   description: string;
-  //NEW 19.03
-  // sunsetOwner: string;
   ownerUserId: string;
 };
 
-//NEW 19.03
-// type NewSunsetPopulated = Omit<NewSunset, "sunsetOwner">;
 type NewSunsetPopulated = Omit<NewSunset, "ownerUserId">;
 export type UpdatedSunset = {
   id: string;
@@ -94,11 +76,11 @@ export type UpdatedSunset = {
   country: string;
   description: string;
 };
-// muss noch angepasst werden
-export type GetSunsetOkResponse = {
-  message: string;
-  user: User;
-};
+
+// export type GetSunsetOkResponse = {
+//   message: string;
+//   user: User;
+// };
 
 export type UpdateOkResponse = {
   username: string;

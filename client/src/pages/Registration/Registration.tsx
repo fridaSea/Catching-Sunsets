@@ -1,11 +1,7 @@
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 // import { MenuContext } from "../../context/MenuContext";
 import "./Registration.css";
-import {
-  RegisterOkResponse,
-  User,
-  UserRegisterForm,
-} from "../../types/customTypes";
+import { RegisterOkResponse, UserRegisterForm } from "../../types/customTypes";
 import { baseUrl } from "../../utilities/urls";
 import { MenuContext } from "../../context/MenuContext";
 import { useNavigate } from "react-router";
@@ -30,7 +26,6 @@ function Registration() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatedPassword, setShowRepeatedPassword] = useState(false);
 
-  const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
   const [fieldErrors, setFieldErrors] = useState({
     username: "",

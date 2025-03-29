@@ -1,0 +1,28 @@
+.update-sunset {
+  .card-container {
+    margin-top: 80px;
+  }
+
+  .card-image {
+    width: 50%;
+    padding-bottom: 15px;
+  }
+
+  h2 {
+    padding-bottom: 5px;
+  }
+
+  p {
+    padding-bottom: 5px;
+    padding-top: 10px;
+  }
+  @media (max-width: 490px) {
+    .card-image {
+      margin-bottom: 20px;
+      display: block;
+      margin: 0 auto;
+      width: 85%;
+      padding-top: 10px;
+    }
+  }
+}

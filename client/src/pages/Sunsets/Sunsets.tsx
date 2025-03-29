@@ -4,38 +4,32 @@ import { baseUrl } from "../../utilities/urls";
 import { NavLink } from "react-router";
 import "./Sunsets.css";
 import {
-  Button,
   Card,
   CardActions,
   CardContent,
   CardMedia,
-  IconButton,
+  CircularProgress,
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SettingsIcon from "@mui/icons-material/Settings";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import { NewSunset } from "../../types/customTypes";
 
 function Sunsets() {
-  const { isMenuOpen, setIsMenuOpen } = useContext(MenuContext);
-
-  // Zustand für gespeicherte Daten
-  // const SunsetURL: string = `${baseUrl}/api/sunsets/all`;
-  const [sunsets, setSunsets] = useState<any[]>([]); // anpassen, je nach Struktur der API-Daten
-  const [error, setError] = useState<string | null>(null);
-
-  const [data, setData] = useState<T | null>(null);
-
-  //useFetch(`${baseUrl}/api/sunsets/all`);
+  const { isMenuOpen } = useContext(MenuContext);
+  const [data, setData] = useState<NewSunset[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true); // Ladeindikator einschalten
       const response = await fetch(`${baseUrl}/api/sunsets/all`);
-      const result = (await response.json()) as T;
-      console.log("result:>>", result);
-      setData(result);
-      //console.log("data :>> ", data);
+      const result = await response.json();
+
+      // Extrahiere das 'allSunsets'-Array aus dem Ergebnis
+      const sunsets = result.allSunsets as NewSunset[];
+      setData(sunsets);
+      console.log("result :>> ", result);
+      setIsLoading(false); // Ladeindikator ausschalten
     };
     fetchData();
   }, []);
@@ -47,119 +41,59 @@ function Sunsets() {
       }`}
     >
       <div>
-        <h1>List of Sunsets</h1>
-        <p>sunset pictures and places</p>
+        <h1>All the Sunset Magic</h1>
       </div>
+      <div>
+        <NavLink to="/sunsets/add">
+          <button className="button">Post a new picture</button>
+        </NavLink>
+      </div>
+      <br />
 
-      {/* DISPLAYING CARDS */}
-      <Grid container spacing={2}>
-        {data && data.allSunsets && data.allSunsets.length > 0 ? (
-          data.allSunsets.map((sunset, index: number) => (
-            <Grid
-              size={{ xs: 12, sm: 6, md: 4 }}
-              key={sunset._id}
-              className="card-container"
-            >
-              <NavLink to={`/sunsets/${sunset._id}`} key={index}>
+      {isLoading ? (
+        <div className="loading-container">
+          <CircularProgress color="inherit" />
+        </div>
+      ) : (
+        <Grid container spacing={2}>
+          {data && data.length > 0 ? (
+            data.map((sunset) => (
+              <Grid
+                size={{ xs: 12, sm: 6, md: 3, lg: 2 }}
+                key={sunset._id}
+                className="card-container"
+              >
                 <Card className="card">
-                  {/* Card Media for image */}
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={sunset.img || "defaultImage.jpg"} // Fallback image if sunset.img is empty
-                    alt={`Sunset in ${sunset.country}`}
-                  />
+                  <NavLink to={`/sunsets/${sunset._id}`} key={sunset._id}>
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={sunset.img}
+                      alt={`Sunset in ${sunset.country}`}
+                    />
+                  </NavLink>
 
-                  {/* Card Content */}
                   <CardContent>
-                    <Typography variant="body2" color="text.secondary">
-                      {sunset.description}
-                    </Typography>
                     <Typography gutterBottom variant="body2" component="div">
-                      {sunset.country} {sunset._id}
+                      {sunset.country}
+                      {/* {sunset._id} */}
                     </Typography>
                   </CardContent>
 
-                  {/* Card Actions */}
                   <CardActions>
-                    <IconButton aria-label="delete">
-                      <DeleteIcon />
-                    </IconButton>
-                    <IconButton aria-label="update">
-                      <SettingsIcon />
-                    </IconButton>
-                    <IconButton aria-label="add to favorites">
-                      <FavoriteIcon />
-                    </IconButton>
-                    <Button size="small">
-                      {/* <Link to={`/api/sunsets/${sunset._id}`} key={index}>
-                        Learn More
-                      </Link> */}
-                    </Button>
+                    {/* <IconButton className="icon" aria-label="add to favorites">
+                    <FavoriteIcon />
+                  </IconButton> */}
+                    {/* <Button size="small"></Button> */}
                   </CardActions>
                 </Card>
-              </NavLink>
-            </Grid>
-          ))
-        ) : (
-          <p>No sunsets available</p>
-        )}
-      </Grid>
-
-      <br />
-      <div>
-        <div>
-          <NavLink to="/sunsets/add">
-            <button className="button">Post a new picture</button>
-          </NavLink>
-        </div>
-        {/* <div>
-          <form onSubmit={handleImageUpload}>
-            <label>Choose your Image:</label>
-            <input
-              type="file"
-              name="image"
-              id="image"
-              accept="image/*"
-              onChange={handleAttachFile}
-            />
-            <button>Upload Image</button>
-            <br />
-
-            <div>
-              <label>Country:</label>
-              <input
-                type="text"
-                // value={textContent}
-                // onChange={handleTextChange}
-                placeholder="Enter Country"
-              />
-            </div>
-
-            <div>
-              <label>Description:</label>
-              <input
-                type="text"
-                // value={textContent}
-                // onChange={handleTextChange}
-                placeholder="Enter description"
-              />
-            </div>
-            <button type="submit" className="button">
-              Post
-            </button>
-          </form>
-        </div> */}
-      </div>
-      <br />
-
-      {/* Add new post/ picture */}
-      {/* <p>Post a new sunset picture</p>
-      <p>
-        <NavLink to="/add">
-          Click <span className="icon icon-camera5"></span> here
-        </NavLink>
-      </p> */}
+              </Grid>
+            ))
+          ) : (
+            <p>No sunsets available</p>
+          )}
+        </Grid>
+      )}
     </div>
   );
 }

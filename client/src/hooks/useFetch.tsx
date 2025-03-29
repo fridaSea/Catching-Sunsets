@@ -11,7 +11,7 @@ function useFetch<T>(url: string): HookReturnType<T> {
     const fetchData = async () => {
       const response = await fetch(url);
       const result = (await response.json()) as T;
-      //   console.log('result:>>', result)
+      console.log("result:>>", result);
       setData(result);
     };
     fetchData();

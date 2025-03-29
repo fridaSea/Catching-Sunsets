@@ -1,11 +1,9 @@
-import React from 'react'
+// function ImageUploadContext() {
+//   return (
+//     <div>
 
-function ImageUploadContext() {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+//     </div>
+//   )
+// }
 
-export default ImageUploadContext
+// export default ImageUploadContext

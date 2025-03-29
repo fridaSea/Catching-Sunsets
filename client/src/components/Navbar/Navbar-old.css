@@ -1,4 +1,4 @@
-* {
+/* * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -37,10 +37,6 @@ a {
   column-gap: 40px;
 }
 
-/* .logo-container{
-    
-} */
-
 .nav {
   transition: all 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out;
@@ -76,13 +72,9 @@ a {
   transition: all 0.3s ease-in-out;
 }
 
-/* Navbar slides in from the left */
-/* .nav--open{
-    transform: translate(0) !important;
-} */
 
 /* Navbar slides in from the top */
-.nav--open {
+/* .nav--open {
   transform: translate(0) !important;
   margin-top: 60px;
 }
@@ -103,7 +95,7 @@ a {
   color: #5fe9e0 !important;
 }
 /* ! CSS to apply to the content of components */
-.component-content-container {
+/* .component-content-container {
   padding: 20px;
   padding-top: 50px;
   min-height: 100vh;
@@ -111,11 +103,11 @@ a {
 }
 @media (max-width: 650px) {
   /* ! CSS to apply to the content of components */
-  .component-content-container.content-container-menu-open {
+/* .component-content-container.content-container-menu-open {
     transform: translateY(180px);
-  }
-  /* Navbar slides in from the left */
-  /* .nav {
+  }   */
+/* Navbar slides in from the left */
+/* .nav {
         position: fixed;
         top: 60px;
         left: 0;
@@ -125,8 +117,8 @@ a {
         transform: translateX(-100%);
     } */
 
-  /* Navbar slides in from the top */
-  .nav {
+/* Navbar slides in from the top */
+/* .nav {
     position: fixed;
     top: 0px;
     left: 0;
@@ -135,10 +127,10 @@ a {
     padding: 10px 0 25px;
     transform: translateY(-100%);
     z-index: 8;
-    /* z-index - sorgt dafür, dass das hamburger menu HINTER dem Logo angeordnet wird */
-  }
+    /* z-index - sorgt dafür, dass das hamburger menu HINTER dem Logo angeordnet wird 
+  } */
 
-  .nav-list {
+/* .nav-list {
     flex-direction: column;
     align-items: center;
     row-gap: 20px;
@@ -155,4 +147,4 @@ a {
   .nav-container {
     position: relative;
   }
-}
+} */

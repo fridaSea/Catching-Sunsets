@@ -7,21 +7,38 @@ function Footer() {
       {/* DESKTOP FOOTER */}
       <div className="footer-content">
         <span className="copyright">
-          {" "}
-          Mady with Love by _frida_sea_ &copy; 2025
+          Made with Love by _frida_sea_ &copy; 2025
         </span>
 
         <div className="socialIcons">
-          <a href="https://www.youtube.com/" target="_blank">
+          <a
+            href="https://www.youtube.com/"
+            target="_blank"
+            aria-label="Link to YouTube Account"
+          >
             <span className="socialicon icon-youtube"></span>
           </a>
-          <a href="https://www.instagram.com/" target="_blank">
+          <a
+            href="https://www.instagram.com/"
+            target="_blank"
+            aria-label="Link to Instagram Account"
+          >
             <span className="socialicon icon-instagram"></span>
           </a>
-          <a href="https://www.tiktok.com/" target="_blank">
+
+          <a
+            href="https://www.tiktok.com/"
+            target="_blank"
+            aria-label="Link to tiktok Account"
+          >
             <span className="socialicon icon-tiktok"></span>
           </a>
-          <a href="https://www.facebook.com/" target="_blank">
+
+          <a
+            href="https://www.facebook.com/"
+            target="_blank"
+            aria-label="Link to Facebook Account"
+          >
             <span className="socialicon icon-facebook2"></span>
           </a>
         </div>

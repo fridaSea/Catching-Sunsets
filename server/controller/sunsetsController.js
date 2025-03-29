@@ -46,7 +46,6 @@ const getSunsetsByLocation = async (req, res) => {
   const location = req.params.location;
   // const {location} = req.params -> both work, you just have to decide for one
 
-  // Add the postman "filter" by location AND Likes
   if (req.query.likes) {
     console.log("request with likes coming");
 
@@ -74,7 +73,6 @@ const getSunsetsByLocation = async (req, res) => {
       res.status(400).json({
         message: errorMessage,
         amount: sunsetsByLocationAndLikes.length,
-        // sunsetsByLocationAndLikes,
       });
       return;
     }
@@ -209,11 +207,8 @@ const updateSunsetById = async (req, res) => {
     if (existingSunset) {
       existingSunset.country = req.body.country;
       existingSunset.description = req.body.description;
-      // es funktioniert hier nur mit req.body.imgUrl; / mit req.body.img funktioniert es nicht
       existingSunset.img = req.body.imgUrl;
       existingSunset.ownerUserId = req.user._id;
-      //existingSunset.img = req.file.path;
-      // existingSunset.imgURL = existingSunset.imgUrl;
 
       await existingSunset.save(); //REVIEW to update documents this works perfectly find, but that doesnÇt take care of paralelism (more than one request made at the same time to update the same). Thats why mongoose have .findByIdAndUpdate. that's is an ATOMIC method, meaning if there are two request to do the same, only one will happen : https://www.mongodb.com/docs/manual/core/write-operations-atomicity/
       console.log("existingSunset :>> ", existingSunset);
@@ -267,12 +262,7 @@ const getUserSunsets = async (req, res) => {
 
   console.log(userId);
   const sunsetsByUser = await SunsetModel.find({ ownerUserId: userId });
-  // const sunsetsByUser = await SunsetModel.find.populate({
-  //   path: "ownerUserId",
-  //   select: ["_id", "username", "email", "postedSunsets"],
-  // });
   res.status(200).json({
-    // message: `Sunsets from ${req.params.ownerUserId}`,
     message: `Sunsets from ${req.user._id}`,
     sunsetsByUser,
   });
@@ -280,13 +270,13 @@ const getUserSunsets = async (req, res) => {
   return;
 };
 
-const likeSunsetById = async (req, res) => {
-  console.log("LIKE SUNSET");
-};
+// const likeSunsetById = async (req, res) => {
+//   console.log("LIKE SUNSET");
+// };
 
-const disLikeSunsetById = async (req, res) => {
-  console.log("DISLIKE SUNSET");
-};
+// const disLikeSunsetById = async (req, res) => {
+//   console.log("DISLIKE SUNSET");
+// };
 
 export {
   getAllSunsets,
@@ -296,6 +286,6 @@ export {
   updateSunsetById,
   deleteSunsetById,
   getUserSunsets,
-  likeSunsetById,
-  disLikeSunsetById,
+  // likeSunsetById,
+  // disLikeSunsetById,
 };

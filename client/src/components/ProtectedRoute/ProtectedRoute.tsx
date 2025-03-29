@@ -1,5 +1,5 @@
 import { ReactNode, useContext } from "react";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink } from "react-router";
 import { AuthContext } from "../../context/AuthorizationContext";
 import { MenuContext } from "../../context/MenuContext";
 import "./Protected Route.css";
@@ -11,9 +11,7 @@ type ProtectedRouteProps = {
 function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { loggedUser } = useContext(AuthContext);
   const { isMenuOpen } = useContext(MenuContext);
-  const navigate = useNavigate();
 
-  // const redirectTo = useNavigate()
   const isAuthenticated = loggedUser ? true : false;
 
   return (
@@ -39,16 +37,6 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
           </div>
         )}
       </div>
-      {/* <h1>Inside a ProtectedRoute</h1>
-        {children} */}
-
-      {/* {isAuthenticated ? children : <h1>You need to login to see your profile</h1> 
-    setTimeout(navigate("/login");
-        }, 5000);  */}
-
-      {/* USE A TIMEOUT ABOVE that will redirect after a few seconds 
-  INSTEAD OF CALLING THE FUNCTION    redirectTo("/")  MAYBE CREATE ANOTHER COMPONENT*/}
-      {/* {isAuthenticated ? children : redirectTo("/")} */}
     </>
   );
 }
