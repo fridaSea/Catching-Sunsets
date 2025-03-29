@@ -47,7 +47,7 @@ function Registration() {
   const handleRegisterInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNewUser({ ...newUser!, [e.target.name]: e.target.value });
   };
-
+  // REVIEW nice job with the validation here. You could try to use a similar one in your server
   const validateField = (name: string, value: string) => {
     if (name === "username" && !/[A-Za-z0-9]{3,16}/.test(value)) {
       return "Your Username can contain numbers and normal characters and should be 3-16 characters long.";
@@ -80,7 +80,7 @@ function Registration() {
     // update[name] = errorMessage;
     setFieldErrors({ ...fieldErrors, [name]: errorMessage });
   };
-
+  // REVIEW try to keep an internal order in your components. So it doesnt take time to see where login variable is comming from
   const { login } = useContext(AuthContext);
   const submitRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -91,6 +91,7 @@ function Registration() {
 
     const urlencoded = new URLSearchParams();
     // TO DO - Do not forget to do Input validation (user has to be proper email, username lenght, if there, password should contain at least xy characters/ letters, numbers and symbols )
+    //REVIEW exactly what you say in your TODO list :)
     if (newUser) {
       urlencoded.append("username", newUser.username);
       urlencoded.append("email", newUser.email);
@@ -124,6 +125,8 @@ function Registration() {
         await login(newUser?.email!, newUser?.password!);
 
         // Warte, bis die Snackbar geschlossen ist, bevor weitergeleitet wird
+        //REVIEW why the duplicated setTimeout?
+        //REVIEW also, you could think about turning it into a reusable function, so you can use this feature in more places
         setTimeout(() => {
           navigate("/profile");
         }, 2500);

@@ -19,7 +19,7 @@ userRouter.get("/all", getAllUsers);
 userRouter.post("/register", registerNewUser);
 userRouter.post("/login", loginNewUser);
 userRouter.get("/profile", jwtAuth, getProfile);
-userRouter.put("/profile", jwtAuth, updateUser);
+userRouter.put("/profile", jwtAuth, updateUser); //REVIEW As commented before, you can find more information about HTTP methods here: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods
 userRouter.delete("/profile", jwtAuth, deleteUser);
 
 // TODO Refeactor code in react app to use imageRoute to upload a new image and then remove this

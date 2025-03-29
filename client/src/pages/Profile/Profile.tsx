@@ -51,6 +51,7 @@ function Profile() {
       getUserProfile();
     }
   }, [loggedUser, getUserProfile]);
+  // REVIEW why putting getUserProfile in the dependency array? what behaviour would you expect with it?
 
   const [selectedFile, setSelectedFile] = useState<File | string>("");
 

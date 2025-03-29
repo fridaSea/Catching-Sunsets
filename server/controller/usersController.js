@@ -10,7 +10,7 @@ import { generateToken } from "../utilities/tokenServices.js";
 const registerNewUser = async (req, res) => {
   const { email, password, username, img } = req.body;
   //   console.log("req.body :>> ", req.body);
-
+  // REVIEW inputs validation is quite important. Try to do some
   // Check if user exist in database
   try {
     const existingUser = await UserModel.findOne({ email: email });
@@ -141,10 +141,10 @@ const deleteUser = async (req, res) => {
     });
   }
 };
-
+// REVIEW loginNewUser impies that you are always loggin a user for the first time. In principle, every use who can loging, its not new anymore, is it?
 const loginNewUser = async (req, res) => {
   const { email, password } = req.body;
-
+  //REVIEW it would be great if you could add some imput validation to make sure email and passwords are just that (and not a script, or malitious code, for example), before making any query to the database.
   //1. Find user in database
   try {
     const existingUser = await UserModel.findOne({ email: req.body.email });

@@ -55,7 +55,7 @@ const getSunsetsByLocation = async (req, res) => {
     });
 
     if (sunsetsByLocationAndLikes.length === 0) {
-      const sunsetsByLocation = await SunsetModel.find({ location: location });
+      const sunsetsByLocation = await SunsetModel.find({ location: location }); //REVIEW Instead of doing a query to the database fo find sunsets by location, and sunseets by likes, you could do just one, and then filter by likes in your code.
       const sunsetsByLikes = await SunsetModel.find({
         likes: { $gte: req.query.likes },
       });
@@ -210,7 +210,7 @@ const updateSunsetById = async (req, res) => {
       existingSunset.img = req.body.imgUrl;
       existingSunset.ownerUserId = req.user._id;
 
-      await existingSunset.save();
+      await existingSunset.save(); //REVIEW to update documents this works perfectly find, but that doesnÇt take care of paralelism (more than one request made at the same time to update the same). Thats why mongoose have .findByIdAndUpdate. that's is an ATOMIC method, meaning if there are two request to do the same, only one will happen : https://www.mongodb.com/docs/manual/core/write-operations-atomicity/
       console.log("existingSunset :>> ", existingSunset);
 
       return res.status(200).json({

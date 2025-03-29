@@ -43,6 +43,7 @@ function LoginForm() {
     });
   };
 
+  // REVIEW DRY principle. You use a very similar finction in Registration. Make it reusable
   const validateField = (name: string, value: string) => {
     if (name === "email") {
       if (!/.{6,}/.test(value)) {
