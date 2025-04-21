@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 
@@ -39,5 +39,10 @@ export default defineConfig({
   //To make sure vite starts always in the same port, to match CORS options
   server: {
     port: 5173,
+  },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.js"],
   },
 });
