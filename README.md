@@ -1,4 +1,4 @@
-🌅 Catching Sunsets
+## 🌅 Catching Sunsets
 ### 
 A full-stack MERN (MongoDB, Express, React, Node.js) web application that allows users to capture, share and explore beautiful sunset moments from around the world. 
 Built with a focus on user experience and a modern tech stack, it offers a simple and aesthetic platform for sunset enthusiasts.
