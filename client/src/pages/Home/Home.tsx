@@ -23,7 +23,12 @@ const Home = () => {
               show us how beautiful it can be.
             </p>
             <br />
-            <img className="hero-image" src={HeroImage} alt="Sunset" />
+            <img
+              className="hero-image"
+              src={HeroImage}
+              alt="Sunset"
+              loading="lazy"
+            />
             <br />
             <p>
               Let us catch some sunsets

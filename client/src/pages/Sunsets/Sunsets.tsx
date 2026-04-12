@@ -70,6 +70,7 @@ function Sunsets() {
                       height="140"
                       image={sunset.img}
                       alt={`Sunset in ${sunset.country}`}
+                      loading="lazy"
                     />
                   </NavLink>
 

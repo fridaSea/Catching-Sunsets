@@ -98,7 +98,12 @@ function DetailSunset() {
       ></button>
       <br />
       <div className="card-container">
-        <img className="card-image" src={sunset?.img} width={"50%"}></img>
+        <img
+          className="card-image"
+          src={sunset?.img}
+          width={"50%"}
+          loading="lazy"
+        ></img>
         <br />
         <p className="bold">Country:</p>
         <p> {sunset?.country}</p>
