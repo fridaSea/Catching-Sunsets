@@ -35,6 +35,9 @@
 }
 
 @media (max-width: 650px) {
+  #root {
+    margin-bottom: 3.5rem;
+  }
   .icon-arrow-left2 {
     color: white;
     text-align: left;
