@@ -1,23 +1,30 @@
 import { useContext, useEffect, useState } from "react";
 import { MenuContext } from "../../context/MenuContext";
 import { baseUrl } from "../../utilities/urls";
-import { NavLink } from "react-router";
+import {NavLink, useNavigate} from "react-router";
 import "./Sunsets.css";
 import {
+  Alert,
   Card,
   CardActions,
   CardContent,
   CardMedia,
-  CircularProgress,
+  CircularProgress, Snackbar,
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { NewSunset } from "../../types/customTypes";
+import {AuthContext} from "../../context/AuthorizationContext.tsx";
 
 function Sunsets() {
   const { isMenuOpen } = useContext(MenuContext);
   const [data, setData] = useState<NewSunset[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const { loggedUser } = useContext(AuthContext);
+  const isAuthenticated = loggedUser ? true : false;
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +41,14 @@ function Sunsets() {
     fetchData();
   }, []);
 
+  const handleClick = () => {
+    if (isAuthenticated) {
+      navigate("/sunsets/add");
+    } else {
+      setOpen(true);
+    }
+  };
+
   return (
     <div
       className={`sunset component-content-container ${
@@ -44,9 +59,21 @@ function Sunsets() {
         <h1>All the Sunset Magic</h1>
       </div>
       <div>
-        <NavLink to="/sunsets/add">
-          <button className="button">Post a new picture</button>
-        </NavLink>
+          <button className="button"
+          onClick={handleClick}>
+            Post a new picture
+          </button>
+
+        <Snackbar
+            open={open}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center'  }}
+            autoHideDuration={3000}
+            onClose={() => setOpen(false)}
+        >
+          <Alert severity="warning" onClose={() => setOpen(false)}>
+            Please log in to post a new picture.
+          </Alert>
+        </Snackbar>
       </div>
       <br />
 
